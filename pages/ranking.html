@@ -1,0 +1,215 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="icon" type="image/svg+xml" href="../assets/logo.svg">
+  <title>CLI Rankings — WebCLI</title>
+  <meta name="description" content="All WebCLI-reviewed command-line tools ranked by their WebCLI score, descending.">
+  <link rel="canonical" href="ranking.html">
+  <link rel="stylesheet" href="../assets/css/style.css">
+</head>
+<body>
+
+<!-- MOBILE-HEADER -->
+<header class="mobile-header">
+  <label for="sidebar-toggle" class="nav-icon" aria-label="Toggle navigation">&#9776;</label>
+  <a class="site-title" href="../index.html">
+    <img src="../assets/logo.svg" alt="" class="header-logo" width="24" height="22">
+    WebCLI
+  </a>
+  <button class="theme-toggle" id="theme-btn" aria-label="Toggle theme">&#9788;</button>
+</header>
+<!-- /MOBILE-HEADER -->
+
+<input type="checkbox" id="sidebar-toggle" class="sidebar-toggle-input">
+
+<div class="page-wrap">
+
+  <!-- SIDEBAR -->
+<nav class="sidebar" aria-label="Site navigation">
+  <div class="sidebar-inner">
+    <div class="sidebar-brand">
+      <a href="../index.html" class="sidebar-brand-link">
+        <img src="../assets/logo.svg" alt="" class="sidebar-logo" width="28" height="25">
+        WebCLI Spec
+        <span class="version-badge">v0.1-draft</span>
+      </a>
+    </div>
+    <ul class="nav-tree">
+      <li><a href="../index.html#what-is-webcli">What is WebCLI?</a></li>
+      <li><a href="../index.html#canonical-clis">The 10 Canonical CLIs</a></li>
+      <li><a href="../index.html#research">Research &amp; Evidence</a></li>
+      <li>
+        <a href="../index.html#core-principles">Core Principles</a>
+        <ul>
+          <li><a href="../index.html#principle-help">Help Output</a></li>
+          <li><a href="../index.html#principle-flags">Flag Conventions</a></li>
+          <li><a href="../index.html#principle-subcommands">Subcommand Structure</a></li>
+          <li><a href="../index.html#principle-exit-codes">Exit Codes</a></li>
+          <li><a href="../index.html#principle-streams">stdout / stderr</a></li>
+        </ul>
+      </li>
+      <li>
+        <a href="../index.html#specification">Specification</a>
+        <ul>
+          <li><a href="../index.html#spec-universal-flags">§1 Universal Flags</a></li>
+          <li><a href="../index.html#spec-subcommand-structure">§2 Subcommand Structure</a></li>
+          <li><a href="../index.html#spec-help-access">§3 Help Access</a></li>
+          <li><a href="../index.html#spec-output-conventions">§4 Output Conventions</a></li>
+          <li><a href="../index.html#spec-json-output">§5 JSON Output</a></li>
+          <li><a href="../index.html#spec-verb-vocabulary">§6 Verb Vocabulary</a></li>
+          <li><a href="../index.html#spec-flag-naming">§7 Flag Naming</a></li>
+          <li><a href="../index.html#spec-positional-args">§8 Positional Arguments</a></li>
+          <li><a href="../index.html#spec-config-layering">§9 Config Layering</a></li>
+          <li><a href="../index.html#spec-piping">§10 Piping &amp; Composability</a></li>
+          <li><a href="../index.html#spec-summary">§11 Summary</a></li>
+        </ul>
+      </li>
+      <li><a href="../index.html#why-it-works">Why It Works</a></li>
+      <li><a href="../index.html#get-involved">Get Involved</a></li>
+      <li>
+        <span class="nav-section-label">Articles</span>
+        <ul>
+          <li><a href="ranking.html">CLI Rankings</a></li>
+          <li><a href="top-clis.html">Top 10 CLIs (Pre-2024)</a></li>
+          <li><a href="gws-review.html">gws CLI Review</a></li>
+          <li><a href="hubspot-review.html">HubSpot CLI Review</a></li>
+        </ul>
+      </li>
+      <li class="nav-collapsible">
+        <input type="checkbox" id="nav-evidence-toggle" class="nav-collapsible-input">
+        <label for="nav-evidence-toggle" class="nav-collapsible-label">Evidence Files <span class="nav-toggle-icon">&#9654;</span></label>
+        <ul class="nav-collapsible-list">
+          <li><a href="md-viewer.html?file=data/cli_design_patterns.md">cli_design_patterns.md</a></li>
+          <li><a href="md-viewer.html?file=data/topclis.md">topclis.md</a></li>
+          <li class="nav-cli-parent"><span class="nav-cli-name">git</span><ul class="nav-cli-sublist"><li><a href="md-viewer.html?file=data/git_help.md">help</a></li><li><a href="md-viewer.html?file=data/git_example.md">examples</a></li></ul></li>
+          <li class="nav-cli-parent"><span class="nav-cli-name">bash</span><ul class="nav-cli-sublist"><li><a href="md-viewer.html?file=data/bash_help.md">help</a></li><li><a href="md-viewer.html?file=data/bash_example.md">examples</a></li></ul></li>
+          <li class="nav-cli-parent"><span class="nav-cli-name">curl</span><ul class="nav-cli-sublist"><li><a href="md-viewer.html?file=data/curl_help.md">help</a></li><li><a href="md-viewer.html?file=data/curl_example.md">examples</a></li></ul></li>
+          <li class="nav-cli-parent"><span class="nav-cli-name">npm</span><ul class="nav-cli-sublist"><li><a href="md-viewer.html?file=data/npm_help.md">help</a></li><li><a href="md-viewer.html?file=data/npm_example.md">examples</a></li></ul></li>
+          <li class="nav-cli-parent"><span class="nav-cli-name">docker</span><ul class="nav-cli-sublist"><li><a href="md-viewer.html?file=data/docker_help.md">help</a></li><li><a href="md-viewer.html?file=data/docker_example.md">examples</a></li></ul></li>
+          <li class="nav-cli-parent"><span class="nav-cli-name">pip</span><ul class="nav-cli-sublist"><li><a href="md-viewer.html?file=data/pip_help.md">help</a></li><li><a href="md-viewer.html?file=data/pip_example.md">examples</a></li></ul></li>
+          <li class="nav-cli-parent"><span class="nav-cli-name">grep</span><ul class="nav-cli-sublist"><li><a href="md-viewer.html?file=data/grep_help.md">help</a></li><li><a href="md-viewer.html?file=data/grep_example.md">examples</a></li></ul></li>
+          <li class="nav-cli-parent"><span class="nav-cli-name">ssh</span><ul class="nav-cli-sublist"><li><a href="md-viewer.html?file=data/ssh_help.md">help</a></li><li><a href="md-viewer.html?file=data/ssh_example.md">examples</a></li></ul></li>
+          <li class="nav-cli-parent"><span class="nav-cli-name">wget</span><ul class="nav-cli-sublist"><li><a href="md-viewer.html?file=data/wget_help.md">help</a></li><li><a href="md-viewer.html?file=data/wget_example.md">examples</a></li></ul></li>
+          <li class="nav-cli-parent"><span class="nav-cli-name">make</span><ul class="nav-cli-sublist"><li><a href="md-viewer.html?file=data/make_help.md">help</a></li><li><a href="md-viewer.html?file=data/make_example.md">examples</a></li></ul></li>
+        </ul>
+      </li>
+    </ul>
+    <div class="sidebar-footer">
+      <button class="theme-toggle theme-toggle-sidebar" id="theme-btn-sidebar" aria-label="Toggle theme">
+        <span class="theme-icon">&#9788;</span> Toggle theme
+      </button>
+    </div>
+  </div>
+</nav>
+<!-- /SIDEBAR -->
+
+  <main class="content" id="main-content">
+
+    <div class="article-hero">
+      <p class="hero-eyebrow">Reference &middot; Rankings</p>
+      <h1>CLI Rankings</h1>
+      <p class="article-meta">All reviewed CLIs scored against the WebCLI LLM-fluent design patterns &middot; Sorted by score, descending</p>
+    </div>
+
+    <section id="ranking">
+      <h2><a class="headerlink" href="#ranking">Ranked CLIs <span class="pilcrow">¶</span></a></h2>
+      <p>
+        Each CLI is reviewed against ten standard dimensions. <strong>Pass</strong> = 10 pts,
+        <strong>Partial</strong> = 5 pts, <strong>Fail</strong> = 0 pts, <strong>Intentional
+        tradeoff</strong> = 5 pts. Maximum score is 100. See the
+        <a href="#methodology">methodology section</a> below for full dimension definitions.
+      </p>
+      <table class="spec-table">
+        <thead>
+          <tr>
+            <th>Rank</th>
+            <th>CLI</th>
+            <th>Score</th>
+            <th>Version</th>
+            <th>Strengths</th>
+            <th>Key gaps</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>1</td>
+            <td><a href="gws-review.html"><code>gws</code></a> — Google Workspace CLI</td>
+            <td><span class="rank-score score-good">72</span></td>
+            <td>v0.16.0</td>
+            <td>JSON-first output, documented exit codes, <code>--dry-run</code> everywhere, env vars fully documented</td>
+            <td><code>-v</code> mis-routed to service parser, no <code>--quiet</code>, inconsistent help renderers</td>
+          </tr>
+          <tr>
+            <td>2</td>
+            <td><a href="hubspot-review.html"><code>hs</code></a> — HubSpot CLI</td>
+            <td><span class="rank-score score-ok">52</span></td>
+            <td>v8.1.0</td>
+            <td>Consistent help system, strong verb vocabulary, <code>--debug</code> on every command, per-command examples</td>
+            <td>No JSON output, <code>-v</code>/<code>-V</code> silently discarded, exit codes undocumented, no <code>--quiet</code></td>
+          </tr>
+        </tbody>
+      </table>
+    </section>
+
+    <hr>
+
+    <section id="methodology">
+      <h2><a class="headerlink" href="#methodology">Scoring methodology <span class="pilcrow">¶</span></a></h2>
+      <p>
+        Scores are calculated across ten standard dimensions derived from the
+        <a href="md-viewer.html?file=data/cli_design_patterns.md">WebCLI design patterns</a>,
+        synthesized from git, bash, curl, npm, docker, pip, grep, ssh, wget, and make.
+        Each dimension is worth up to 10 points for a maximum total of 100.
+      </p>
+      <table class="spec-table">
+        <thead>
+          <tr><th>#</th><th>Dimension</th><th>What is checked</th></tr>
+        </thead>
+        <tbody>
+          <tr><td>1</td><td>Help system</td><td><code>-h</code>/<code>--help</code> works at every level; consistent renderer throughout</td></tr>
+          <tr><td>2</td><td><code>--version</code></td><td><code>--version</code> and <code>-V</code> both present and print version string correctly</td></tr>
+          <tr><td>3</td><td>Verbose flag</td><td><code>-v</code>/<code>--verbose</code> intercepted and handled; not misrouted or silently dropped</td></tr>
+          <tr><td>4</td><td>Quiet flag</td><td><code>-q</code>/<code>--quiet</code> suppresses non-data output; safe for CI and piping</td></tr>
+          <tr><td>5</td><td>Output streams</td><td>Errors go to stderr; data goes to stdout; non-zero exit on failure</td></tr>
+          <tr><td>6</td><td>Machine-readable output</td><td>JSON (or equivalent) output mode available; safely pipeable to <code>jq</code></td></tr>
+          <tr><td>7</td><td>Exit codes</td><td>Distinct codes documented in <code>--help</code>; caller can branch without parsing text</td></tr>
+          <tr><td>8</td><td>Flag naming</td><td>Kebab-case flags throughout; no camelCase leaks; short aliases consistent</td></tr>
+          <tr><td>9</td><td>Subcommand structure</td><td>Consistent verb/noun or noun/verb pattern; predictable command discovery</td></tr>
+          <tr><td>10</td><td>Composability</td><td>Pipeable output, <code>--dry-run</code>, shell completion, or equivalent scripting options</td></tr>
+        </tbody>
+      </table>
+      <div class="admonition note">
+        <p class="admonition-title">Score values</p>
+        <p>
+          <strong>Pass</strong> = 10 pts &nbsp;&middot;&nbsp;
+          <strong>Partial</strong> = 5 pts &nbsp;&middot;&nbsp;
+          <strong>Fail</strong> = 0 pts &nbsp;&middot;&nbsp;
+          <strong>Intentional tradeoff</strong> = 5 pts (architecture-driven divergence from convention;
+          not penalized as a full failure but does not earn full credit).
+        </p>
+      </div>
+    </section>
+
+    <footer class="page-footer">
+      <p>WebCLI Spec &middot; Draft v0.1 &middot; March 2026 &middot; <a href="https://github.com/webclihq/spec" rel="noopener">GitHub</a> &middot; Released under <a href="https://creativecommons.org/licenses/by/4.0/" rel="noopener">CC BY 4.0</a> &middot; Authored by <a href="https://github.com/chandler212" rel="noopener">@chandler212</a></p>
+      <p class="footer-disclaimer">No affiliation with or endorsement from any company referenced herein. All trademarks are the property of their respective owners.</p>
+    </footer>
+
+  </main>
+
+  <aside class="right-toc" aria-label="On this page">
+    <p class="toc-title">On this page</p>
+    <ul>
+      <li><a href="#ranking">Ranked CLIs</a></li>
+      <li><a href="#methodology">Scoring methodology</a></li>
+    </ul>
+  </aside>
+
+</div>
+
+<script src="../assets/js/site.js"></script>
+
+</body>
+</html>

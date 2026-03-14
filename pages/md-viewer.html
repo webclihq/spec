@@ -1,0 +1,237 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="icon" type="image/svg+xml" href="../assets/logo.svg">
+  <title id="page-title">Evidence File — WebCLI</title>
+  <meta name="robots" content="index, follow">
+  <meta id="page-description" name="description" content="CLI design evidence file from the WebCLI research corpus.">
+  <link rel="stylesheet" href="../assets/css/style.css">
+  <script>
+    // Bot/CLI/LLM detection — runs before render to decide render mode.
+    // If this is an automated agent, we skip all HTML chrome and output raw text.
+    (function() {
+      var ua = navigator.userAgent || '';
+      var isBot = /curl|wget|python|httpie|libwww|lwp|java\/|go-http|ruby|php\/|perl\/|axios|node-fetch|undici|scrapy|bot|crawler|spider|slurp|baiduspider|googlebot|bingbot|yandex|duckduck|semrush|ahrefs|mj12|dotbot|ia_archiver|facebookexternalhit|twitterbot|linkedinbot|whatsapp|telegrambot|discordbot/i.test(ua);
+      // Also treat requests with no navigator.userAgent (unlikely in real browser) as bot
+      if (!ua) isBot = true;
+      window._isBot = isBot;
+    })();
+  </script>
+</head>
+<body>
+
+<div id="bot-output" style="display:none">
+  <pre id="raw-content"></pre>
+</div>
+
+<!-- Full site chrome — shown for browser requests -->
+<div id="site-chrome">
+
+<!-- Mobile header -->
+<!-- MOBILE-HEADER -->
+<header class="mobile-header">
+  <label for="sidebar-toggle" class="nav-icon" aria-label="Toggle navigation">&#9776;</label>
+  <a class="site-title" href="../index.html">
+    <img src="../assets/logo.svg" alt="" class="header-logo" width="24" height="22">
+    WebCLI
+  </a>
+  <button class="theme-toggle" id="theme-btn" aria-label="Toggle theme">&#9788;</button>
+</header>
+<!-- /MOBILE-HEADER -->
+
+<input type="checkbox" id="sidebar-toggle" class="sidebar-toggle-input">
+
+<div class="page-wrap">
+
+  <!-- SIDEBAR -->
+<nav class="sidebar" aria-label="Site navigation">
+  <div class="sidebar-inner">
+    <div class="sidebar-brand">
+      <a href="../index.html" class="sidebar-brand-link">
+        <img src="../assets/logo.svg" alt="" class="sidebar-logo" width="28" height="25">
+        WebCLI Spec
+        <span class="version-badge">v0.1-draft</span>
+      </a>
+    </div>
+    <ul class="nav-tree">
+      <li><a href="../index.html#what-is-webcli">What is WebCLI?</a></li>
+      <li><a href="../index.html#canonical-clis">The 10 Canonical CLIs</a></li>
+      <li><a href="../index.html#research">Research &amp; Evidence</a></li>
+      <li>
+        <a href="../index.html#core-principles">Core Principles</a>
+        <ul>
+          <li><a href="../index.html#principle-help">Help Output</a></li>
+          <li><a href="../index.html#principle-flags">Flag Conventions</a></li>
+          <li><a href="../index.html#principle-subcommands">Subcommand Structure</a></li>
+          <li><a href="../index.html#principle-exit-codes">Exit Codes</a></li>
+          <li><a href="../index.html#principle-streams">stdout / stderr</a></li>
+        </ul>
+      </li>
+      <li>
+        <a href="../index.html#specification">Specification</a>
+        <ul>
+          <li><a href="../index.html#spec-universal-flags">§1 Universal Flags</a></li>
+          <li><a href="../index.html#spec-subcommand-structure">§2 Subcommand Structure</a></li>
+          <li><a href="../index.html#spec-help-access">§3 Help Access</a></li>
+          <li><a href="../index.html#spec-output-conventions">§4 Output Conventions</a></li>
+          <li><a href="../index.html#spec-json-output">§5 JSON Output</a></li>
+          <li><a href="../index.html#spec-verb-vocabulary">§6 Verb Vocabulary</a></li>
+          <li><a href="../index.html#spec-flag-naming">§7 Flag Naming</a></li>
+          <li><a href="../index.html#spec-positional-args">§8 Positional Arguments</a></li>
+          <li><a href="../index.html#spec-config-layering">§9 Config Layering</a></li>
+          <li><a href="../index.html#spec-piping">§10 Piping &amp; Composability</a></li>
+          <li><a href="../index.html#spec-summary">§11 Summary</a></li>
+        </ul>
+      </li>
+      <li><a href="../index.html#why-it-works">Why It Works</a></li>
+      <li><a href="../index.html#get-involved">Get Involved</a></li>
+      <li>
+        <span class="nav-section-label">Articles</span>
+        <ul>
+          <li><a href="ranking.html">CLI Rankings</a></li>
+          <li><a href="top-clis.html">Top 10 CLIs (Pre-2024)</a></li>
+          <li><a href="gws-review.html">gws CLI Review</a></li>
+          <li><a href="hubspot-review.html">HubSpot CLI Review</a></li>
+        </ul>
+      </li>
+      <li class="nav-collapsible">
+        <input type="checkbox" id="nav-evidence-toggle" class="nav-collapsible-input">
+        <label for="nav-evidence-toggle" class="nav-collapsible-label">Evidence Files <span class="nav-toggle-icon">&#9654;</span></label>
+        <ul class="nav-collapsible-list">
+          <li><a href="md-viewer.html?file=data/cli_design_patterns.md">cli_design_patterns.md</a></li>
+          <li><a href="md-viewer.html?file=data/topclis.md">topclis.md</a></li>
+          <li class="nav-cli-parent"><span class="nav-cli-name">git</span><ul class="nav-cli-sublist"><li><a href="md-viewer.html?file=data/git_help.md">help</a></li><li><a href="md-viewer.html?file=data/git_example.md">examples</a></li></ul></li>
+          <li class="nav-cli-parent"><span class="nav-cli-name">bash</span><ul class="nav-cli-sublist"><li><a href="md-viewer.html?file=data/bash_help.md">help</a></li><li><a href="md-viewer.html?file=data/bash_example.md">examples</a></li></ul></li>
+          <li class="nav-cli-parent"><span class="nav-cli-name">curl</span><ul class="nav-cli-sublist"><li><a href="md-viewer.html?file=data/curl_help.md">help</a></li><li><a href="md-viewer.html?file=data/curl_example.md">examples</a></li></ul></li>
+          <li class="nav-cli-parent"><span class="nav-cli-name">npm</span><ul class="nav-cli-sublist"><li><a href="md-viewer.html?file=data/npm_help.md">help</a></li><li><a href="md-viewer.html?file=data/npm_example.md">examples</a></li></ul></li>
+          <li class="nav-cli-parent"><span class="nav-cli-name">docker</span><ul class="nav-cli-sublist"><li><a href="md-viewer.html?file=data/docker_help.md">help</a></li><li><a href="md-viewer.html?file=data/docker_example.md">examples</a></li></ul></li>
+          <li class="nav-cli-parent"><span class="nav-cli-name">pip</span><ul class="nav-cli-sublist"><li><a href="md-viewer.html?file=data/pip_help.md">help</a></li><li><a href="md-viewer.html?file=data/pip_example.md">examples</a></li></ul></li>
+          <li class="nav-cli-parent"><span class="nav-cli-name">grep</span><ul class="nav-cli-sublist"><li><a href="md-viewer.html?file=data/grep_help.md">help</a></li><li><a href="md-viewer.html?file=data/grep_example.md">examples</a></li></ul></li>
+          <li class="nav-cli-parent"><span class="nav-cli-name">ssh</span><ul class="nav-cli-sublist"><li><a href="md-viewer.html?file=data/ssh_help.md">help</a></li><li><a href="md-viewer.html?file=data/ssh_example.md">examples</a></li></ul></li>
+          <li class="nav-cli-parent"><span class="nav-cli-name">wget</span><ul class="nav-cli-sublist"><li><a href="md-viewer.html?file=data/wget_help.md">help</a></li><li><a href="md-viewer.html?file=data/wget_example.md">examples</a></li></ul></li>
+          <li class="nav-cli-parent"><span class="nav-cli-name">make</span><ul class="nav-cli-sublist"><li><a href="md-viewer.html?file=data/make_help.md">help</a></li><li><a href="md-viewer.html?file=data/make_example.md">examples</a></li></ul></li>
+        </ul>
+      </li>
+    </ul>
+    <div class="sidebar-footer">
+      <button class="theme-toggle theme-toggle-sidebar" id="theme-btn-sidebar" aria-label="Toggle theme">
+        <span class="theme-icon">&#9788;</span> Toggle theme
+      </button>
+    </div>
+  </div>
+</nav>
+<!-- /SIDEBAR -->
+
+  <!-- Main content -->
+  <main class="content" id="main-content">
+    <div class="viewer-meta">
+      <span id="viewer-filename" class="viewer-raw-link"></span>
+      &middot;
+      <a id="viewer-raw-link" href="#" class="viewer-raw-link">view raw</a>
+      &middot;
+      <a href="../index.html#research">&#8592; back to Research &amp; Evidence</a>
+    </div>
+    <div id="md-content"></div>
+
+    <footer class="page-footer">
+      <p>WebCLI Spec &middot; Draft v0.1 &middot; March 2026 &middot; <a href="https://github.com/webclihq/spec?utm_source=webcli&utm_medium=referral&utm_campaign=evidence_footer" rel="noopener">GitHub</a> &middot; Released under <a href="https://creativecommons.org/licenses/by/4.0/?utm_source=webcli&utm_medium=referral&utm_campaign=evidence_footer" rel="noopener">CC BY 4.0</a> &middot; Authored by <a href="https://github.com/chandler212" rel="noopener">@chandler212</a></p>
+      <p class="footer-disclaimer">No affiliation with or endorsement from any company or product referenced herein.</p>
+    </footer>
+  </main>
+
+  <!-- Right TOC (populated dynamically) -->
+  <aside class="right-toc" aria-label="On this page">
+    <p class="toc-title">On this page</p>
+    <ul id="toc-list"></ul>
+  </aside>
+
+</div><!-- .page-wrap -->
+</div><!-- #site-chrome -->
+
+<!--
+  marked.js — lightweight markdown parser, no external CSS dependency.
+  Loaded only for browser rendering; bots get raw text instead.
+-->
+<script src="https://cdn.jsdelivr.net/npm/marked@9/marked.min.js"></script>
+<script>
+(function() {
+  // Parse ?file= param, sanitize to prevent directory traversal
+  function getFileParam() {
+    var params = new URLSearchParams(window.location.search);
+    var f = params.get('file') || '';
+    // Only allow paths within data/
+    f = f.replace(/\.\.\//g, '').replace(/^\/+/, '');
+    if (!f.startsWith('data/')) return null;
+    return f;
+  }
+
+  var filePath = getFileParam();
+
+  if (!filePath) {
+    document.getElementById('md-content').innerHTML =
+      '<p>No file specified. Use <code>?file=data/filename.md</code>.</p>';
+    return;
+  }
+
+  // Update meta and title from filename
+  var filename = filePath.split('/').pop();
+  document.getElementById('page-title').textContent = filename + ' — WebCLI Evidence';
+  document.getElementById('page-description').content =
+    'CLI design evidence file: ' + filename + ' from the WebCLI research corpus.';
+  document.getElementById('viewer-filename').textContent = filename;
+  document.getElementById('viewer-raw-link').href = '../' + filePath;
+
+  // Mark current nav link for CSS (accent blue, no inline styles)
+  var fileParam = 'file=' + filePath;
+  document.querySelectorAll('#site-chrome .nav-collapsible-list a').forEach(function(a) {
+    if (a.href.indexOf(fileParam) !== -1) a.setAttribute('aria-current', 'page');
+  });
+
+  // Fetch the markdown file — path is relative to repo root, resolve from pages/
+  fetch('../' + filePath)
+    .then(function(r) {
+      if (!r.ok) throw new Error('HTTP ' + r.status);
+      return r.text();
+    })
+    .then(function(text) {
+      if (window._isBot) {
+        // Bot mode: show raw markdown, hide site chrome
+        document.getElementById('site-chrome').style.display = 'none';
+        document.getElementById('bot-output').style.display = 'block';
+        document.getElementById('raw-content').textContent = text;
+        document.title = filename;
+        return;
+      }
+
+      // Browser mode: render markdown
+      var html = marked.parse(text);
+      document.getElementById('md-content').innerHTML = html;
+
+      // Build right TOC from rendered headings
+      var headings = document.querySelectorAll('#md-content h2, #md-content h3');
+      var tocList = document.getElementById('toc-list');
+      headings.forEach(function(h, i) {
+        var id = 'md-h-' + i;
+        h.id = id;
+        var li = document.createElement('li');
+        if (h.tagName === 'H3') li.style.marginLeft = '1em';
+        var a = document.createElement('a');
+        a.href = '#' + id;
+        a.textContent = h.textContent;
+        li.appendChild(a);
+        tocList.appendChild(li);
+      });
+    })
+    .catch(function(err) {
+      document.getElementById('md-content').innerHTML =
+        '<p>Could not load <code>' + filePath + '</code>: ' + err.message + '</p>';
+    });
+
+})();
+</script>
+<script src="../assets/js/site.js"></script>
+
+</body>
+</html>

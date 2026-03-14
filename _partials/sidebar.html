@@ -1,0 +1,76 @@
+<nav class="sidebar" aria-label="Site navigation">
+  <div class="sidebar-inner">
+    <div class="sidebar-brand">
+      <a href="{{ROOT}}index.html" class="sidebar-brand-link">
+        <img src="{{ROOT}}assets/logo.svg" alt="" class="sidebar-logo" width="28" height="25">
+        WebCLI Spec
+        <span class="version-badge">v0.1-draft</span>
+      </a>
+    </div>
+    <ul class="nav-tree">
+      <li><a href="{{ROOT}}index.html#what-is-webcli">What is WebCLI?</a></li>
+      <li><a href="{{ROOT}}index.html#canonical-clis">The 10 Canonical CLIs</a></li>
+      <li><a href="{{ROOT}}index.html#research">Research &amp; Evidence</a></li>
+      <li>
+        <a href="{{ROOT}}index.html#core-principles">Core Principles</a>
+        <ul>
+          <li><a href="{{ROOT}}index.html#principle-help">Help Output</a></li>
+          <li><a href="{{ROOT}}index.html#principle-flags">Flag Conventions</a></li>
+          <li><a href="{{ROOT}}index.html#principle-subcommands">Subcommand Structure</a></li>
+          <li><a href="{{ROOT}}index.html#principle-exit-codes">Exit Codes</a></li>
+          <li><a href="{{ROOT}}index.html#principle-streams">stdout / stderr</a></li>
+        </ul>
+      </li>
+      <li>
+        <a href="{{ROOT}}index.html#specification">Specification</a>
+        <ul>
+          <li><a href="{{ROOT}}index.html#spec-universal-flags">§1 Universal Flags</a></li>
+          <li><a href="{{ROOT}}index.html#spec-subcommand-structure">§2 Subcommand Structure</a></li>
+          <li><a href="{{ROOT}}index.html#spec-help-access">§3 Help Access</a></li>
+          <li><a href="{{ROOT}}index.html#spec-output-conventions">§4 Output Conventions</a></li>
+          <li><a href="{{ROOT}}index.html#spec-json-output">§5 JSON Output</a></li>
+          <li><a href="{{ROOT}}index.html#spec-verb-vocabulary">§6 Verb Vocabulary</a></li>
+          <li><a href="{{ROOT}}index.html#spec-flag-naming">§7 Flag Naming</a></li>
+          <li><a href="{{ROOT}}index.html#spec-positional-args">§8 Positional Arguments</a></li>
+          <li><a href="{{ROOT}}index.html#spec-config-layering">§9 Config Layering</a></li>
+          <li><a href="{{ROOT}}index.html#spec-piping">§10 Piping &amp; Composability</a></li>
+          <li><a href="{{ROOT}}index.html#spec-summary">§11 Summary</a></li>
+        </ul>
+      </li>
+      <li><a href="{{ROOT}}index.html#why-it-works">Why It Works</a></li>
+      <li><a href="{{ROOT}}index.html#get-involved">Get Involved</a></li>
+      <li>
+        <span class="nav-section-label">Articles</span>
+        <ul>
+          <li><a href="{{PAGES}}ranking.html">CLI Rankings</a></li>
+          <li><a href="{{PAGES}}top-clis.html">Top 10 CLIs (Pre-2024)</a></li>
+          <li><a href="{{PAGES}}gws-review.html">gws CLI Review</a></li>
+          <li><a href="{{PAGES}}hubspot-review.html">HubSpot CLI Review</a></li>
+        </ul>
+      </li>
+      <li class="nav-collapsible">
+        <input type="checkbox" id="nav-evidence-toggle" class="nav-collapsible-input">
+        <label for="nav-evidence-toggle" class="nav-collapsible-label">Evidence Files <span class="nav-toggle-icon">&#9654;</span></label>
+        <ul class="nav-collapsible-list">
+          <li><a href="{{PAGES}}md-viewer.html?file=data/cli_design_patterns.md">cli_design_patterns.md</a></li>
+          <li><a href="{{PAGES}}md-viewer.html?file=data/topclis.md">topclis.md</a></li>
+          <li class="nav-cli-parent"><span class="nav-cli-name">git</span><ul class="nav-cli-sublist"><li><a href="{{PAGES}}md-viewer.html?file=data/git_help.md">help</a></li><li><a href="{{PAGES}}md-viewer.html?file=data/git_example.md">examples</a></li></ul></li>
+          <li class="nav-cli-parent"><span class="nav-cli-name">bash</span><ul class="nav-cli-sublist"><li><a href="{{PAGES}}md-viewer.html?file=data/bash_help.md">help</a></li><li><a href="{{PAGES}}md-viewer.html?file=data/bash_example.md">examples</a></li></ul></li>
+          <li class="nav-cli-parent"><span class="nav-cli-name">curl</span><ul class="nav-cli-sublist"><li><a href="{{PAGES}}md-viewer.html?file=data/curl_help.md">help</a></li><li><a href="{{PAGES}}md-viewer.html?file=data/curl_example.md">examples</a></li></ul></li>
+          <li class="nav-cli-parent"><span class="nav-cli-name">npm</span><ul class="nav-cli-sublist"><li><a href="{{PAGES}}md-viewer.html?file=data/npm_help.md">help</a></li><li><a href="{{PAGES}}md-viewer.html?file=data/npm_example.md">examples</a></li></ul></li>
+          <li class="nav-cli-parent"><span class="nav-cli-name">docker</span><ul class="nav-cli-sublist"><li><a href="{{PAGES}}md-viewer.html?file=data/docker_help.md">help</a></li><li><a href="{{PAGES}}md-viewer.html?file=data/docker_example.md">examples</a></li></ul></li>
+          <li class="nav-cli-parent"><span class="nav-cli-name">pip</span><ul class="nav-cli-sublist"><li><a href="{{PAGES}}md-viewer.html?file=data/pip_help.md">help</a></li><li><a href="{{PAGES}}md-viewer.html?file=data/pip_example.md">examples</a></li></ul></li>
+          <li class="nav-cli-parent"><span class="nav-cli-name">grep</span><ul class="nav-cli-sublist"><li><a href="{{PAGES}}md-viewer.html?file=data/grep_help.md">help</a></li><li><a href="{{PAGES}}md-viewer.html?file=data/grep_example.md">examples</a></li></ul></li>
+          <li class="nav-cli-parent"><span class="nav-cli-name">ssh</span><ul class="nav-cli-sublist"><li><a href="{{PAGES}}md-viewer.html?file=data/ssh_help.md">help</a></li><li><a href="{{PAGES}}md-viewer.html?file=data/ssh_example.md">examples</a></li></ul></li>
+          <li class="nav-cli-parent"><span class="nav-cli-name">wget</span><ul class="nav-cli-sublist"><li><a href="{{PAGES}}md-viewer.html?file=data/wget_help.md">help</a></li><li><a href="{{PAGES}}md-viewer.html?file=data/wget_example.md">examples</a></li></ul></li>
+          <li class="nav-cli-parent"><span class="nav-cli-name">make</span><ul class="nav-cli-sublist"><li><a href="{{PAGES}}md-viewer.html?file=data/make_help.md">help</a></li><li><a href="{{PAGES}}md-viewer.html?file=data/make_example.md">examples</a></li></ul></li>
+        </ul>
+      </li>
+    </ul>
+    <div class="sidebar-footer">
+      <button class="theme-toggle theme-toggle-sidebar" id="theme-btn-sidebar" aria-label="Toggle theme">
+        <span class="theme-icon">&#9788;</span> Toggle theme
+      </button>
+    </div>
+  </div>
+</nav>

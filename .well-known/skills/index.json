@@ -1,0 +1,9 @@
+{
+  "skills": [
+    {
+      "name": "webcli",
+      "description": "Build LLM-fluent CLIs using the WebCLI Spec. Use when designing a CLI, choosing flag names, structuring subcommands, writing help output, or making a CLI that AI agents can use without needing documentation in context.",
+      "files": ["SKILL.md"]
+    }
+  ]
+}

@@ -1,0 +1,533 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="icon" type="image/svg+xml" href="../assets/logo.svg">
+  <title>HubSpot CLI Review — WebCLI</title>
+  <meta name="description" content="A critique of HubSpot's hs CLI (v8.1.0) against the WebCLI LLM-fluent design patterns.">
+  <link rel="canonical" href="hubspot-review.html">
+  <link rel="stylesheet" href="../assets/css/style.css">
+</head>
+<body>
+
+<!-- MOBILE-HEADER -->
+<header class="mobile-header">
+  <label for="sidebar-toggle" class="nav-icon" aria-label="Toggle navigation">&#9776;</label>
+  <a class="site-title" href="../index.html">
+    <img src="../assets/logo.svg" alt="" class="header-logo" width="24" height="22">
+    WebCLI
+  </a>
+  <button class="theme-toggle" id="theme-btn" aria-label="Toggle theme">&#9788;</button>
+</header>
+<!-- /MOBILE-HEADER -->
+
+<input type="checkbox" id="sidebar-toggle" class="sidebar-toggle-input">
+
+<div class="page-wrap">
+
+  <!-- SIDEBAR -->
+<nav class="sidebar" aria-label="Site navigation">
+  <div class="sidebar-inner">
+    <div class="sidebar-brand">
+      <a href="../index.html" class="sidebar-brand-link">
+        <img src="../assets/logo.svg" alt="" class="sidebar-logo" width="28" height="25">
+        WebCLI Spec
+        <span class="version-badge">v0.1-draft</span>
+      </a>
+    </div>
+    <ul class="nav-tree">
+      <li><a href="../index.html#what-is-webcli">What is WebCLI?</a></li>
+      <li><a href="../index.html#canonical-clis">The 10 Canonical CLIs</a></li>
+      <li><a href="../index.html#research">Research &amp; Evidence</a></li>
+      <li>
+        <a href="../index.html#core-principles">Core Principles</a>
+        <ul>
+          <li><a href="../index.html#principle-help">Help Output</a></li>
+          <li><a href="../index.html#principle-flags">Flag Conventions</a></li>
+          <li><a href="../index.html#principle-subcommands">Subcommand Structure</a></li>
+          <li><a href="../index.html#principle-exit-codes">Exit Codes</a></li>
+          <li><a href="../index.html#principle-streams">stdout / stderr</a></li>
+        </ul>
+      </li>
+      <li>
+        <a href="../index.html#specification">Specification</a>
+        <ul>
+          <li><a href="../index.html#spec-universal-flags">§1 Universal Flags</a></li>
+          <li><a href="../index.html#spec-subcommand-structure">§2 Subcommand Structure</a></li>
+          <li><a href="../index.html#spec-help-access">§3 Help Access</a></li>
+          <li><a href="../index.html#spec-output-conventions">§4 Output Conventions</a></li>
+          <li><a href="../index.html#spec-json-output">§5 JSON Output</a></li>
+          <li><a href="../index.html#spec-verb-vocabulary">§6 Verb Vocabulary</a></li>
+          <li><a href="../index.html#spec-flag-naming">§7 Flag Naming</a></li>
+          <li><a href="../index.html#spec-positional-args">§8 Positional Arguments</a></li>
+          <li><a href="../index.html#spec-config-layering">§9 Config Layering</a></li>
+          <li><a href="../index.html#spec-piping">§10 Piping &amp; Composability</a></li>
+          <li><a href="../index.html#spec-summary">§11 Summary</a></li>
+        </ul>
+      </li>
+      <li><a href="../index.html#why-it-works">Why It Works</a></li>
+      <li><a href="../index.html#get-involved">Get Involved</a></li>
+      <li>
+        <span class="nav-section-label">Articles</span>
+        <ul>
+          <li><a href="ranking.html">CLI Rankings</a></li>
+          <li><a href="top-clis.html">Top 10 CLIs (Pre-2024)</a></li>
+          <li><a href="gws-review.html">gws CLI Review</a></li>
+          <li><a href="hubspot-review.html">HubSpot CLI Review</a></li>
+        </ul>
+      </li>
+      <li class="nav-collapsible">
+        <input type="checkbox" id="nav-evidence-toggle" class="nav-collapsible-input">
+        <label for="nav-evidence-toggle" class="nav-collapsible-label">Evidence Files <span class="nav-toggle-icon">&#9654;</span></label>
+        <ul class="nav-collapsible-list">
+          <li><a href="md-viewer.html?file=data/cli_design_patterns.md">cli_design_patterns.md</a></li>
+          <li><a href="md-viewer.html?file=data/topclis.md">topclis.md</a></li>
+          <li class="nav-cli-parent"><span class="nav-cli-name">git</span><ul class="nav-cli-sublist"><li><a href="md-viewer.html?file=data/git_help.md">help</a></li><li><a href="md-viewer.html?file=data/git_example.md">examples</a></li></ul></li>
+          <li class="nav-cli-parent"><span class="nav-cli-name">bash</span><ul class="nav-cli-sublist"><li><a href="md-viewer.html?file=data/bash_help.md">help</a></li><li><a href="md-viewer.html?file=data/bash_example.md">examples</a></li></ul></li>
+          <li class="nav-cli-parent"><span class="nav-cli-name">curl</span><ul class="nav-cli-sublist"><li><a href="md-viewer.html?file=data/curl_help.md">help</a></li><li><a href="md-viewer.html?file=data/curl_example.md">examples</a></li></ul></li>
+          <li class="nav-cli-parent"><span class="nav-cli-name">npm</span><ul class="nav-cli-sublist"><li><a href="md-viewer.html?file=data/npm_help.md">help</a></li><li><a href="md-viewer.html?file=data/npm_example.md">examples</a></li></ul></li>
+          <li class="nav-cli-parent"><span class="nav-cli-name">docker</span><ul class="nav-cli-sublist"><li><a href="md-viewer.html?file=data/docker_help.md">help</a></li><li><a href="md-viewer.html?file=data/docker_example.md">examples</a></li></ul></li>
+          <li class="nav-cli-parent"><span class="nav-cli-name">pip</span><ul class="nav-cli-sublist"><li><a href="md-viewer.html?file=data/pip_help.md">help</a></li><li><a href="md-viewer.html?file=data/pip_example.md">examples</a></li></ul></li>
+          <li class="nav-cli-parent"><span class="nav-cli-name">grep</span><ul class="nav-cli-sublist"><li><a href="md-viewer.html?file=data/grep_help.md">help</a></li><li><a href="md-viewer.html?file=data/grep_example.md">examples</a></li></ul></li>
+          <li class="nav-cli-parent"><span class="nav-cli-name">ssh</span><ul class="nav-cli-sublist"><li><a href="md-viewer.html?file=data/ssh_help.md">help</a></li><li><a href="md-viewer.html?file=data/ssh_example.md">examples</a></li></ul></li>
+          <li class="nav-cli-parent"><span class="nav-cli-name">wget</span><ul class="nav-cli-sublist"><li><a href="md-viewer.html?file=data/wget_help.md">help</a></li><li><a href="md-viewer.html?file=data/wget_example.md">examples</a></li></ul></li>
+          <li class="nav-cli-parent"><span class="nav-cli-name">make</span><ul class="nav-cli-sublist"><li><a href="md-viewer.html?file=data/make_help.md">help</a></li><li><a href="md-viewer.html?file=data/make_example.md">examples</a></li></ul></li>
+        </ul>
+      </li>
+    </ul>
+    <div class="sidebar-footer">
+      <button class="theme-toggle theme-toggle-sidebar" id="theme-btn-sidebar" aria-label="Toggle theme">
+        <span class="theme-icon">&#9788;</span> Toggle theme
+      </button>
+    </div>
+  </div>
+</nav>
+<!-- /SIDEBAR -->
+
+  <main class="content" id="main-content">
+
+    <div class="article-hero">
+      <p class="hero-eyebrow">Article &middot; CLI Review</p>
+      <h1>HubSpot CLI Review</h1>
+      <p class="article-meta">HubSpot CLI v8.1.0 &middot; Released March 3, 2026 &middot; Reviewed against WebCLI LLM-fluent design patterns</p>
+    </div>
+
+    <div class="review-score-block">
+      <div class="score-badge score-ok">52</div>
+      <div>
+        <div class="score-label">WebCLI Score</div>
+        <div class="score-meta">Good structure and verb vocabulary; machine-readable output and quiet mode are the main gaps.</div>
+      </div>
+      <a class="score-link" href="#scoring">How scores work &#8594;</a>
+    </div>
+
+    <section id="intro">
+      <p>
+        <code>hs</code> is HubSpot's official command-line interface for the HubSpot developer platform:
+        CMS, projects, serverless functions, secrets, sandboxes, HubDB tables, and more. Its v8.0.0
+        major release landed on February 9, 2026, with v8.1.0 following on March 3. The CLI has been
+        in continuous development since 2021 (v3.0.0) and now spans over 60 subcommands across 15
+        top-level command groups.
+      </p>
+      <p>
+        Its design goals are different from an agent-first CLI like <code>gws</code>. <code>hs</code>
+        is primarily a developer onboarding and project workflow tool, getting developers set up with
+        credentials, scaffolding projects, uploading and watching files, and deploying builds. Many of
+        its commands are explicitly interactive, prompting for input when arguments are omitted.
+        That context matters: scripting and agent patterns don't always apply to a tool that's
+        intentionally built around the interactive terminal session.
+      </p>
+      <div class="admonition note">
+        <p class="admonition-title">What this review is</p>
+        <p>
+          An analysis of <code>hs --help</code> and subcommand help output for all 15 top-level
+          command groups against the
+          <a href="md-viewer.html?file=data/cli_design_patterns.md">WebCLI design patterns</a>
+          synthesized from git, bash, curl, npm, docker, pip, grep, ssh, wget, and make.
+        </p>
+      </div>
+    </section>
+
+    <hr>
+
+    <section id="scoring">
+      <h2><a class="headerlink" href="#scoring">Scoring methodology <span class="pilcrow">¶</span></a></h2>
+      <p>
+        Every WebCLI review assigns a score from 0 to 100. The score is calculated across
+        ten standard dimensions, each worth 10 points. <strong>Pass</strong> = 10 pts,
+        <strong>Partial</strong> = 5 pts, <strong>Fail</strong> = 0 pts. <strong>Intentional
+        tradeoff</strong> = 5 pts; these are not penalized as failures, but full credit
+        requires a full pass.
+      </p>
+      <table class="spec-table">
+        <thead>
+          <tr><th>#</th><th>Dimension</th><th>What is checked</th><th>Points</th></tr>
+        </thead>
+        <tbody>
+          <tr><td>1</td><td>Help system</td><td><code>-h</code>/<code>--help</code> works at every level of the command tree; consistent renderer</td><td>0–10</td></tr>
+          <tr><td>2</td><td><code>--version</code></td><td><code>--version</code> and <code>-V</code> both present and correct</td><td>0–10</td></tr>
+          <tr><td>3</td><td>Verbose flag</td><td><code>-v</code>/<code>--verbose</code> intercepted and handled; not misrouted or silently dropped</td><td>0–10</td></tr>
+          <tr><td>4</td><td>Quiet flag</td><td><code>-q</code>/<code>--quiet</code> suppresses non-data output; safe for piping and CI</td><td>0–10</td></tr>
+          <tr><td>5</td><td>Output streams</td><td>Errors go to stderr; data goes to stdout; exit codes non-zero on failure</td><td>0–10</td></tr>
+          <tr><td>6</td><td>Machine-readable output</td><td>JSON (or equivalent) output available; safely pipeable to <code>jq</code></td><td>0–10</td></tr>
+          <tr><td>7</td><td>Exit codes</td><td>Distinct exit codes documented in <code>--help</code>; caller can branch without parsing text</td><td>0–10</td></tr>
+          <tr><td>8</td><td>Flag naming</td><td>Kebab-case flags; no camelCase leaks; short aliases consistent</td><td>0–10</td></tr>
+          <tr><td>9</td><td>Subcommand structure</td><td>Consistent verb/noun or noun/verb pattern; predictable discovery</td><td>0–10</td></tr>
+          <tr><td>10</td><td>Composability</td><td>Pipeable output, <code>--dry-run</code>, shell completion, or equivalent scripting options</td><td>0–10</td></tr>
+        </tbody>
+      </table>
+      <p>
+        All reviewed CLIs are ranked on the <a href="ranking.html">CLI Rankings</a> page.
+      </p>
+    </section>
+
+    <hr>
+
+    <section id="scorecard">
+      <h2><a class="headerlink" href="#scorecard">Scorecard <span class="pilcrow">¶</span></a></h2>
+      <table class="spec-table">
+        <thead>
+          <tr><th>Design Rule</th><th>Status</th><th>Notes</th></tr>
+        </thead>
+        <tbody>
+          <tr><td><code>-h</code> / <code>--help</code></td><td><strong>Pass</strong></td><td>Works at every level of the command tree</td></tr>
+          <tr><td><code>--version</code></td><td><strong>Pass</strong></td><td>Prints <code>8.1.0</code> correctly</td></tr>
+          <tr><td><code>-V</code> short version flag</td><td><strong>Fail</strong></td><td><code>-V</code> silently shows root help instead of version</td></tr>
+          <tr><td><code>-v</code> / <code>--verbose</code></td><td><strong>Fail</strong></td><td><code>-v</code> silently shows root help; no verbose mode exists anywhere</td></tr>
+          <tr><td><code>-q</code> / <code>--quiet</code></td><td><strong>Fail</strong></td><td>Absent entirely; significant for CI/CD use</td></tr>
+          <tr><td><code>-d</code> / <code>--debug</code></td><td><strong>Pass</strong></td><td>Consistently present with short flag on all operational commands</td></tr>
+          <tr><td><code>-c</code> / <code>--config</code></td><td><strong>Pass</strong></td><td>Present on all operational commands; accepts a config file path</td></tr>
+          <tr><td><code>-f</code> / <code>--force</code></td><td><strong>Pass</strong></td><td>Present on <code>deploy</code>, <code>cms upload</code>, and other destructive operations</td></tr>
+          <tr><td><code>-o</code> / <code>--output</code></td><td><strong>Fail</strong></td><td><code>-o</code> is repurposed as <code>--overwrite</code> on <code>cms fetch</code>; no output format flag exists</td></tr>
+          <tr><td>JSON output</td><td><strong>Fail</strong></td><td>No <code>--format json</code> or <code>--output json</code> anywhere; all output is human-readable text</td></tr>
+          <tr><td>Errors &#8594; stderr</td><td><strong>Pass</strong></td><td><code>[ERROR]</code> messages go to stderr; exit code 1 on unknown args</td></tr>
+          <tr><td>Exit codes documented</td><td><strong>Fail</strong></td><td>Not documented in any <code>--help</code> output; only exit 0 and exit 1 observed</td></tr>
+          <tr><td>Subcommand structure</td><td><strong>Pass</strong></td><td><code>&lt;tool&gt; &lt;noun&gt; &lt;verb&gt;</code> pattern is clear and consistent; see analysis below</td></tr>
+          <tr><td>Verb vocabulary</td><td><strong>Pass</strong></td><td><code>list</code>, <code>create</code>, <code>add</code>, <code>delete</code>, <code>upload</code>, <code>fetch</code>, <code>watch</code>, <code>deploy</code>, <code>logs</code>, <code>init</code>, <code>migrate</code></td></tr>
+          <tr><td>Flag naming (kebab-case)</td><td><strong>Partial</strong></td><td>Most flags are kebab-case; <code>--deployLatestBuild</code> leaks camelCase into help text</td></tr>
+          <tr><td>Flag consistency across commands</td><td><strong>Partial</strong></td><td><code>-a</code>/<code>--account</code> and <code>--use-env</code> inconsistently present across subcommands</td></tr>
+          <tr><td>Examples in help output</td><td><strong>Pass</strong></td><td>Present on most leaf commands with realistic, varied examples</td></tr>
+          <tr><td><code>hs completion</code></td><td><strong>Pass</strong></td><td>Shell completion script generation for bash/zsh</td></tr>
+          <tr><td>Interactive wizard design</td><td><strong>Intentional tradeoff</strong></td><td>See analysis below</td></tr>
+          <tr><td>Product-specific nouns</td><td><strong>Intentional tradeoff</strong></td><td>See analysis below</td></tr>
+          <tr><td><code>[BETA]</code> labeling</td><td><strong>Intentional tradeoff</strong></td><td>See analysis below</td></tr>
+        </tbody>
+      </table>
+    </section>
+
+    <hr>
+
+    <section id="passes">
+      <h2><a class="headerlink" href="#passes">What it does well <span class="pilcrow">¶</span></a></h2>
+
+      <h3 id="help">Help system</h3>
+      <p>
+        Both <code>hs --help</code> and <code>hs -h</code> work, and the pattern cascades through the
+        full command tree. <code>hs project --help</code>, <code>hs project deploy --help</code>,
+        <code>hs cms watch --help</code>: every level produces well-structured output using yargs's
+        consistent renderer. Unlike the <code>gws</code> CLI which uses two different help renderers,
+        <code>hs</code> uses a single format throughout: description, subcommands, positional
+        arguments, options, and examples, in that order.
+      </p>
+
+      <h3 id="verb-vocabulary">Verb vocabulary</h3>
+      <p>
+        The verb choices across <code>hs</code>'s subcommands closely match the high-saturation verbs
+        from the design guide:
+      </p>
+      <table class="spec-table">
+        <thead><tr><th>Verb</th><th>Where used</th><th>Guide ranking</th></tr></thead>
+        <tbody>
+          <tr><td><code>list</code> / <code>ls</code></td><td><code>project list</code>, <code>hubdb list</code>, <code>secret list</code>, <code>account list</code></td><td>#6</td></tr>
+          <tr><td><code>create</code></td><td><code>project create</code>, <code>hubdb create</code>, <code>sandbox create</code></td><td>#8</td></tr>
+          <tr><td><code>delete</code></td><td><code>hubdb delete</code>, <code>sandbox delete</code>, <code>secret delete</code>, <code>account remove</code></td><td>#9</td></tr>
+          <tr><td><code>logs</code></td><td><code>project logs</code></td><td>#13</td></tr>
+          <tr><td><code>init</code></td><td><code>hs init</code></td><td>#14</td></tr>
+          <tr><td><code>upload</code></td><td><code>cms upload</code>, <code>filemanager upload</code></td><td>upload = run variant</td></tr>
+          <tr><td><code>fetch</code></td><td><code>cms fetch</code>, <code>filemanager fetch</code>, <code>hubdb fetch</code></td><td>pull variant, #5</td></tr>
+          <tr><td><code>watch</code></td><td><code>cms watch</code>, <code>project watch</code></td><td>related to <code>logs</code>/<code>start</code></td></tr>
+          <tr><td><code>deploy</code></td><td><code>project deploy</code></td><td>run variant, #2</td></tr>
+          <tr><td><code>migrate</code></td><td><code>config migrate</code>, <code>project migrate</code>, <code>app migrate</code></td><td>update variant, #10</td></tr>
+        </tbody>
+      </table>
+      <p>
+        The vocabulary is consistent with git/docker/npm patterns. An LLM generating
+        <code>hs project list</code>, <code>hs secret delete</code>, or <code>hs cms fetch</code>
+        will get it right on the first try.
+      </p>
+
+      <h3 id="debug-flag"><code>-d</code> / <code>--debug</code> consistency</h3>
+      <p>
+        Every operational command in <code>hs</code> exposes <code>-d, --debug</code> as a short
+        flag that sets the log level to debug. The short flag is consistent throughout; no
+        command uses <code>--debug</code> without the <code>-d</code> alias. This matches the
+        medium-confidence <code>-d</code> pattern from the design guide (pip, wget, docker) and
+        is one of the few flags applied uniformly across the entire CLI.
+      </p>
+
+      <h3 id="examples">Examples in help output</h3>
+      <p>
+        Most leaf commands include an <code>Examples:</code> block with multiple realistic invocations.
+        <code>hs project deploy --help</code> shows three examples covering the common cases:
+        default deploy, targeting a specific build ID, and deploying with a profile. This is
+        better practice than most of the reference tools, which either omit examples entirely
+        or include only a single trivial one.
+      </p>
+
+      <h3 id="doctor"><code>hs doctor</code></h3>
+      <p>
+        A dedicated diagnostic command that retrieves configuration information and, with
+        <code>--output-dir</code>, saves a detailed JSON diagnosis file. This is a pattern seen
+        in mature CLIs (cf. <code>npm doctor</code>) and is genuinely useful for an LLM or developer
+        troubleshooting a configuration problem has a single command to run rather than having to
+        piece together state from multiple sources.
+      </p>
+
+      <h3 id="completion"><code>hs completion</code></h3>
+      <p>
+        Shell completion script generation is documented and functional, with a working example
+        (<code>hs completion >> ~/.zshrc</code>) directly in the help output. The design guide
+        identifies shell completion as a composability feature. Having it as a named top-level
+        subcommand rather than buried in documentation means an LLM will predict
+        <code>hs completion</code> correctly.
+      </p>
+    </section>
+
+    <hr>
+
+    <section id="real-problems">
+      <h2><a class="headerlink" href="#real-problems">Real problems <span class="pilcrow">¶</span></a></h2>
+      <p>
+        These are not tradeoffs. They are gaps that conflict with <code>hs</code>'s own stated
+        goals and with the most fundamental conventions of the reference set.
+      </p>
+
+      <h3 id="verbose-flag"><code>-v</code> and <code>-V</code> are silently discarded</h3>
+      <p>
+        Running <code>hs -v</code> or <code>hs -V</code> silently prints the full root help
+        and exits 0, as if the flag was not provided at all. There is no verbose mode, no
+        error, and no indication that the flag was unrecognized:
+      </p>
+      <pre><code>$ hs -v
+The command line interface to interact with HubSpot.
+
+Commands:
+  hs get-started  A step-by-step command to get you started...
+  ...
+
+Options:
+      --version  Show version number  [boolean]
+  -h, --help     Show help  [boolean]</code></pre>
+      <p>
+        The design guide rates <code>-v</code>/<code>--verbose</code> as "Very high" confidence;
+        one of the first flags an LLM will generate. Silently treating it as a help trigger
+        produces a subtle failure mode: a script that passes <code>-v</code> gets back help text
+        instead of verbose output or an error, with exit code 0. This is harder to debug than
+        an explicit unknown-flag error. At a minimum, <code>-v</code> should be intercepted and
+        return an error or be mapped to <code>--debug</code>.
+      </p>
+
+      <h3 id="quiet-flag"><code>--quiet</code> is absent</h3>
+      <p>
+        There is no <code>-q</code>/<code>--quiet</code> flag anywhere in the CLI. For a tool
+        used in CI/CD pipelines, where <code>hs project deploy</code> runs as part of a build,
+        suppressing progress output and spinner text matters. The design guide rates quiet mode
+        8/10 across the reference set. Without it, stdout is not safe to pipe: running
+        <code>hs project list | jq</code> would fail anyway because there is no JSON output
+        (see below), but the absence of <code>--quiet</code> closes off any path to scripting
+        the tool cleanly.
+      </p>
+
+      <h3 id="no-json">No machine-readable output</h3>
+      <p>
+        There is no <code>--format json</code>, <code>--output json</code>, or any equivalent
+        on any command. All output is human-readable text. For <code>hs project list</code>,
+        <code>hs secret list</code>, <code>hs account list</code>, and every other data-returning
+        command, the output cannot be piped to <code>jq</code> or processed by a script without
+        screen-scraping.
+      </p>
+      <p>
+        This is the most significant gap in the CLI. The design guide identifies JSON output as a
+        "rapidly converging" pattern across the reference set (docker, npm, pip all support it).
+        An LLM will instinctively try
+        <code>hs project list --output json</code> or
+        <code>hs project list --format json</code> and get an "Unknown argument" error. For a
+        tool with CI/CD and automation use cases, the absence of structured output is a
+        fundamental composability failure.
+      </p>
+
+      <h3 id="broken-custom-object"><code>hs custom-object --help</code> is broken</h3>
+      <p>
+        Running <code>hs custom-object --help</code>, <code>hs custom-object schema --help</code>,
+        and <code>hs custom-object schema update --help</code> all produce identical output:
+      </p>
+      <pre><code>hs custom-object schema update
+
+Options:
+      --version  Show version number  [boolean]
+  -h, --help     Show help  [boolean]</code></pre>
+      <p>
+        The command group listing is never shown, the command description is absent, and the
+        options shown (<code>--version</code> and <code>--help</code> only) suggest an
+        unimplemented stub rather than a command that was labeled <code>[BETA]</code>.
+        This help output provides no information that would allow a user or LLM to understand
+        what the command does or how to use it.
+      </p>
+
+      <h3 id="camel-leak">camelCase flag leaks into help text</h3>
+      <p>
+        <code>hs project deploy --help</code> exposes:
+      </p>
+      <pre><code>      --deployLatestBuild, --deploy-latest-build  Deploy the latest build...</code></pre>
+      <p>
+        This is a yargs artifact: when a camelCase internal property name is used, yargs
+        automatically generates both the camelCase and kebab-case variants and lists both in
+        help. The result is a flag that violates the kebab-case convention and exposes
+        implementation details to the user. The fix is to define the flag with a kebab-case
+        name internally, or explicitly suppress the camelCase alias from help output.
+      </p>
+
+      <h3 id="no-exit-codes">Exit codes are undocumented</h3>
+      <p>
+        No <code>--help</code> output anywhere in the CLI documents exit codes. The only
+        observable behavior is exit 0 on success and exit 1 on an unrecognized argument.
+        Whether <code>hs project deploy</code> exits differently on an authentication failure
+        versus an API error versus a local validation error is unknown from the CLI's own
+        documentation. The design guide identifies documented exit codes as the basis for
+        reliable scripting: a calling system cannot branch on exit codes it does not know exist.
+      </p>
+    </section>
+
+    <hr>
+
+    <section id="tradeoffs">
+      <h2><a class="headerlink" href="#tradeoffs">Intentional tradeoffs <span class="pilcrow">¶</span></a></h2>
+      <p>
+        These patterns diverge from the design guide but for clear architectural reasons
+        given <code>hs</code>'s primary audience and design goals.
+      </p>
+
+      <h3 id="interactive-wizards">Interactive wizard design</h3>
+      <p>
+        Many <code>hs</code> commands are designed to prompt interactively when required arguments
+        are omitted: <code>hs auth</code>, <code>hs init</code>, <code>hs get-started</code>,
+        <code>hs project create</code>, <code>hs project logs</code> all open interactive prompts.
+        From a scripting perspective this is a problem: a non-interactive invocation with
+        missing arguments hangs waiting for input rather than failing with a usage error. From a
+        developer onboarding perspective, it is exactly right. <code>hs</code>'s primary surface
+        is the first-time developer setting up a HubSpot project, not a CI runner. The wizard
+        pattern makes onboarding much easier. The correct fix is not to remove the
+        wizards but to add a <code>--no-interactive</code> or <code>--quiet</code> flag that
+        forces non-interactive mode and fails fast when required arguments are absent.
+      </p>
+
+      <h3 id="product-nouns">Product-specific resource nouns</h3>
+      <p>
+        The top-level command groups use HubSpot product names (<code>hubdb</code>,
+        <code>filemanager</code>, <code>cms</code>, <code>sandbox</code>) rather than
+        generic terms. This is the right call. A developer who knows HubSpot's product
+        vocabulary will immediately understand what each command group manages. Replacing
+        <code>hubdb</code> with <code>database</code> or <code>filemanager</code> with
+        <code>storage</code> would reduce friction for new users at the cost of alienating
+        the existing HubSpot developer community that the CLI is primarily serving. The design
+        guide's verb vocabulary applies within each group (the <em>verbs</em> are standard); the
+        noun choices are product-appropriate.
+      </p>
+
+      <h3 id="use-env"><code>--use-env</code> for configuration</h3>
+      <p>
+        Several commands support <code>--use-env</code> as an alternative to <code>--config</code>,
+        signaling that configuration should be read from environment variables rather than a
+        config file. This is a reasonable complement to the standard config-file pattern. In
+        CI/CD environments where secrets are injected as environment variables, <code>--use-env</code>
+        makes the intent explicit rather than relying on config file precedence rules. Both
+        <code>--config &lt;file&gt;</code> and <code>--use-env</code> being available on the same
+        command gives operators flexibility without forcing a single pattern.
+      </p>
+
+      <h3 id="beta-labels"><code>[BETA]</code> labeling</h3>
+      <p>
+        <code>hs sandbox</code> and <code>hs custom-object</code> are labeled <code>[BETA]</code>
+        in the top-level help listing. This is correct practice: it sets user expectations,
+        signals that the CLI contract may change, and explains why the behavior may be rougher
+        than stable commands. The design guide does not address stability labels, but this is
+        consistent with how <code>docker buildx</code> and similar commands handle experimental
+        features. The label would be more meaningful if the <code>custom-object</code> help
+        output were not broken (see above).
+      </p>
+    </section>
+
+    <hr>
+
+    <section id="summary">
+      <h2><a class="headerlink" href="#summary">Summary <span class="pilcrow">¶</span></a></h2>
+      <p>
+        <code>hs</code> is a mature CLI with a clear audience and consistent internal conventions.
+        The verb vocabulary, help system, <code>--debug</code> flag discipline, and per-command
+        examples are all done well. The intentional tradeoffs around interactive wizards and
+        product-specific nouns are appropriate for a developer-facing onboarding tool.
+      </p>
+      <p>
+        The main problems are a short list but they matter. The silent discard of <code>-v</code> and
+        <code>-V</code> is a quiet failure mode that will confuse developers and LLMs alike. The
+        complete absence of JSON output makes the CLI composable only through screen-scraping,
+        which is untenable as HubSpot pushes deeper into automation and MCP tooling; the
+        <code>hs mcp</code> command group's own existence makes the gap harder to ignore. The
+        broken <code>custom-object</code> help and the undocumented exit codes are fixable in
+        a single release. The <code>--quiet</code> and JSON output gaps are architectural
+        additions that would make scripting and automation viable for what v8 appears to
+        be building toward.
+      </p>
+    </section>
+
+    <footer class="page-footer">
+      <p>WebCLI Spec &middot; Draft v0.1 &middot; March 2026 &middot; <a href="https://github.com/webclihq/spec" rel="noopener">GitHub</a> &middot; Released under <a href="https://creativecommons.org/licenses/by/4.0/" rel="noopener">CC BY 4.0</a> &middot; Authored by <a href="https://github.com/chandler212" rel="noopener">@chandler212</a></p>
+      <p class="footer-disclaimer">No affiliation with or endorsement from HubSpot or any company referenced herein. All trademarks are the property of their respective owners.</p>
+    </footer>
+
+  </main>
+
+  <aside class="right-toc" aria-label="On this page">
+    <p class="toc-title">On this page</p>
+    <ul>
+      <li><a href="#scoring">Scoring methodology</a></li>
+      <li><a href="#scorecard">Scorecard</a></li>
+      <li><a href="#passes">What it does well</a>
+        <ul>
+          <li><a href="#help">Help system</a></li>
+          <li><a href="#verb-vocabulary">Verb vocabulary</a></li>
+          <li><a href="#debug-flag">--debug consistency</a></li>
+          <li><a href="#examples">Examples</a></li>
+          <li><a href="#doctor">hs doctor</a></li>
+          <li><a href="#completion">hs completion</a></li>
+        </ul>
+      </li>
+      <li><a href="#real-problems">Real problems</a>
+        <ul>
+          <li><a href="#verbose-flag">-v/-V discarded</a></li>
+          <li><a href="#quiet-flag">--quiet absent</a></li>
+          <li><a href="#no-json">No JSON output</a></li>
+          <li><a href="#broken-custom-object">custom-object broken</a></li>
+          <li><a href="#camel-leak">camelCase leak</a></li>
+          <li><a href="#no-exit-codes">Exit codes undocumented</a></li>
+        </ul>
+      </li>
+      <li><a href="#tradeoffs">Intentional tradeoffs</a>
+        <ul>
+          <li><a href="#interactive-wizards">Interactive wizards</a></li>
+          <li><a href="#product-nouns">Product-specific nouns</a></li>
+          <li><a href="#use-env">--use-env</a></li>
+          <li><a href="#beta-labels">[BETA] labeling</a></li>
+        </ul>
+      </li>
+      <li><a href="#summary">Summary</a></li>
+    </ul>
+  </aside>
+
+</div>
+
+<script src="../assets/js/site.js"></script>
+
+</body>
+</html>

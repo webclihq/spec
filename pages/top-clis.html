@@ -1,0 +1,331 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="icon" type="image/svg+xml" href="../assets/logo.svg">
+  <title>Top 10 CLIs in LLM Training Data (Pre-2024) — WebCLI</title>
+  <meta name="description" content="Stack-ranked analysis of the ten CLIs most heavily represented in LLM pre-training corpora before 2024: git, bash, curl, npm, docker, pip, grep, ssh, wget, make.">
+  <link rel="canonical" href="top-clis.html">
+  <link rel="stylesheet" href="../assets/css/style.css">
+</head>
+<body>
+
+<!-- MOBILE-HEADER -->
+<header class="mobile-header">
+  <label for="sidebar-toggle" class="nav-icon" aria-label="Toggle navigation">&#9776;</label>
+  <a class="site-title" href="../index.html">
+    <img src="../assets/logo.svg" alt="" class="header-logo" width="24" height="22">
+    WebCLI
+  </a>
+  <button class="theme-toggle" id="theme-btn" aria-label="Toggle theme">&#9788;</button>
+</header>
+<!-- /MOBILE-HEADER -->
+
+<!-- Sidebar toggle (CSS checkbox hack) -->
+<input type="checkbox" id="sidebar-toggle" class="sidebar-toggle-input">
+
+<div class="page-wrap">
+
+  <!-- SIDEBAR -->
+<nav class="sidebar" aria-label="Site navigation">
+  <div class="sidebar-inner">
+    <div class="sidebar-brand">
+      <a href="../index.html" class="sidebar-brand-link">
+        <img src="../assets/logo.svg" alt="" class="sidebar-logo" width="28" height="25">
+        WebCLI Spec
+        <span class="version-badge">v0.1-draft</span>
+      </a>
+    </div>
+    <ul class="nav-tree">
+      <li><a href="../index.html#what-is-webcli">What is WebCLI?</a></li>
+      <li><a href="../index.html#canonical-clis">The 10 Canonical CLIs</a></li>
+      <li><a href="../index.html#research">Research &amp; Evidence</a></li>
+      <li>
+        <a href="../index.html#core-principles">Core Principles</a>
+        <ul>
+          <li><a href="../index.html#principle-help">Help Output</a></li>
+          <li><a href="../index.html#principle-flags">Flag Conventions</a></li>
+          <li><a href="../index.html#principle-subcommands">Subcommand Structure</a></li>
+          <li><a href="../index.html#principle-exit-codes">Exit Codes</a></li>
+          <li><a href="../index.html#principle-streams">stdout / stderr</a></li>
+        </ul>
+      </li>
+      <li>
+        <a href="../index.html#specification">Specification</a>
+        <ul>
+          <li><a href="../index.html#spec-universal-flags">§1 Universal Flags</a></li>
+          <li><a href="../index.html#spec-subcommand-structure">§2 Subcommand Structure</a></li>
+          <li><a href="../index.html#spec-help-access">§3 Help Access</a></li>
+          <li><a href="../index.html#spec-output-conventions">§4 Output Conventions</a></li>
+          <li><a href="../index.html#spec-json-output">§5 JSON Output</a></li>
+          <li><a href="../index.html#spec-verb-vocabulary">§6 Verb Vocabulary</a></li>
+          <li><a href="../index.html#spec-flag-naming">§7 Flag Naming</a></li>
+          <li><a href="../index.html#spec-positional-args">§8 Positional Arguments</a></li>
+          <li><a href="../index.html#spec-config-layering">§9 Config Layering</a></li>
+          <li><a href="../index.html#spec-piping">§10 Piping &amp; Composability</a></li>
+          <li><a href="../index.html#spec-summary">§11 Summary</a></li>
+        </ul>
+      </li>
+      <li><a href="../index.html#why-it-works">Why It Works</a></li>
+      <li><a href="../index.html#get-involved">Get Involved</a></li>
+      <li>
+        <span class="nav-section-label">Articles</span>
+        <ul>
+          <li><a href="ranking.html">CLI Rankings</a></li>
+          <li><a href="top-clis.html">Top 10 CLIs (Pre-2024)</a></li>
+          <li><a href="gws-review.html">gws CLI Review</a></li>
+          <li><a href="hubspot-review.html">HubSpot CLI Review</a></li>
+        </ul>
+      </li>
+      <li class="nav-collapsible">
+        <input type="checkbox" id="nav-evidence-toggle" class="nav-collapsible-input">
+        <label for="nav-evidence-toggle" class="nav-collapsible-label">Evidence Files <span class="nav-toggle-icon">&#9654;</span></label>
+        <ul class="nav-collapsible-list">
+          <li><a href="md-viewer.html?file=data/cli_design_patterns.md">cli_design_patterns.md</a></li>
+          <li><a href="md-viewer.html?file=data/topclis.md">topclis.md</a></li>
+          <li class="nav-cli-parent"><span class="nav-cli-name">git</span><ul class="nav-cli-sublist"><li><a href="md-viewer.html?file=data/git_help.md">help</a></li><li><a href="md-viewer.html?file=data/git_example.md">examples</a></li></ul></li>
+          <li class="nav-cli-parent"><span class="nav-cli-name">bash</span><ul class="nav-cli-sublist"><li><a href="md-viewer.html?file=data/bash_help.md">help</a></li><li><a href="md-viewer.html?file=data/bash_example.md">examples</a></li></ul></li>
+          <li class="nav-cli-parent"><span class="nav-cli-name">curl</span><ul class="nav-cli-sublist"><li><a href="md-viewer.html?file=data/curl_help.md">help</a></li><li><a href="md-viewer.html?file=data/curl_example.md">examples</a></li></ul></li>
+          <li class="nav-cli-parent"><span class="nav-cli-name">npm</span><ul class="nav-cli-sublist"><li><a href="md-viewer.html?file=data/npm_help.md">help</a></li><li><a href="md-viewer.html?file=data/npm_example.md">examples</a></li></ul></li>
+          <li class="nav-cli-parent"><span class="nav-cli-name">docker</span><ul class="nav-cli-sublist"><li><a href="md-viewer.html?file=data/docker_help.md">help</a></li><li><a href="md-viewer.html?file=data/docker_example.md">examples</a></li></ul></li>
+          <li class="nav-cli-parent"><span class="nav-cli-name">pip</span><ul class="nav-cli-sublist"><li><a href="md-viewer.html?file=data/pip_help.md">help</a></li><li><a href="md-viewer.html?file=data/pip_example.md">examples</a></li></ul></li>
+          <li class="nav-cli-parent"><span class="nav-cli-name">grep</span><ul class="nav-cli-sublist"><li><a href="md-viewer.html?file=data/grep_help.md">help</a></li><li><a href="md-viewer.html?file=data/grep_example.md">examples</a></li></ul></li>
+          <li class="nav-cli-parent"><span class="nav-cli-name">ssh</span><ul class="nav-cli-sublist"><li><a href="md-viewer.html?file=data/ssh_help.md">help</a></li><li><a href="md-viewer.html?file=data/ssh_example.md">examples</a></li></ul></li>
+          <li class="nav-cli-parent"><span class="nav-cli-name">wget</span><ul class="nav-cli-sublist"><li><a href="md-viewer.html?file=data/wget_help.md">help</a></li><li><a href="md-viewer.html?file=data/wget_example.md">examples</a></li></ul></li>
+          <li class="nav-cli-parent"><span class="nav-cli-name">make</span><ul class="nav-cli-sublist"><li><a href="md-viewer.html?file=data/make_help.md">help</a></li><li><a href="md-viewer.html?file=data/make_example.md">examples</a></li></ul></li>
+        </ul>
+      </li>
+    </ul>
+    <div class="sidebar-footer">
+      <button class="theme-toggle theme-toggle-sidebar" id="theme-btn-sidebar" aria-label="Toggle theme">
+        <span class="theme-icon">&#9788;</span> Toggle theme
+      </button>
+    </div>
+  </div>
+</nav>
+<!-- /SIDEBAR -->
+
+  <!-- Main content -->
+  <main class="content" id="main-content">
+
+    <div class="article-hero">
+      <p class="hero-eyebrow">Article &middot; WebCLI Research</p>
+      <h1>Top 10 CLIs in LLM Training Data (Pre-2024)</h1>
+      <p class="article-meta">Stack-ranked by estimated presence in LLM training corpora before 2024 &middot; Sources: Warp State of the CLI 2023, Stack Overflow Developer Survey 2023, GitHub Octoverse 2023</p>
+    </div>
+
+    <section id="intro">
+      <p>
+        Ranking is based on four proxies: Stack Overflow question volume, GitHub corpus presence
+        (READMEs, CI configs, shell scripts), developer survey adoption rates, and general web
+        footprint (tutorials, man pages, blog posts).
+      </p>
+      <div class="admonition note">
+        <p class="admonition-title">Why this matters</p>
+        <p>The tools ranked highest here are the ones whose patterns are most deeply embedded in LLM weights. A new CLI that matches their conventions benefits from that saturation at inference time: the model already "knows" how your tool works.</p>
+      </div>
+    </section>
+
+    <hr>
+
+    <section id="git">
+      <h2><a class="headerlink" href="#git">1. git <span class="pilcrow">¶</span></a></h2>
+      <p class="article-meta">~152K Stack Overflow questions &middot; 95%+ developer adoption</p>
+      <p>
+        Git is present in virtually every software project on the internet. Every GitHub and GitLab
+        repository README references it. Every CI/CD config invokes it. The Stack Overflow 2023 survey
+        found over 95% of 90,000+ respondents used git, with 75% using it exclusively for version control.
+        GitHub reported 100 million new repositories created in 2022 alone. No other CLI tool is embedded
+        this deeply across the breadth of the web corpus.
+      </p>
+      <p><a href="md-viewer.html?file=data/git_help.md&utm_source=webcli&utm_medium=internal&utm_campaign=top_clis_article">Help</a> &middot; <a href="md-viewer.html?file=data/git_example.md&utm_source=webcli&utm_medium=internal&utm_campaign=top_clis_article">Examples</a></p>
+    </section>
+
+    <section id="bash">
+      <h2><a class="headerlink" href="#bash">2. bash <span class="pilcrow">¶</span></a></h2>
+      <p class="article-meta">~156K Stack Overflow questions &middot; Default shell on Linux; macOS default until 2019</p>
+      <p>
+        bash (and its predecessor <code>sh</code>) is not just a command; it is the runtime for the
+        entire command-line world. Every Linux server tutorial, every deployment script, every cron job
+        example, every "getting started" guide on the web is written in or references bash. Unix man pages,
+        POSIX documentation, and decades of scripting guides all accumulate into an enormous pre-2024
+        corpus footprint. The Warp 2023 State of the CLI survey found bash as the second most-used shell
+        at 17% (behind zsh's 69%, itself bash-compatible), and it remains the default on most Linux server images.
+      </p>
+      <p><a href="md-viewer.html?file=data/bash_help.md&utm_source=webcli&utm_medium=internal&utm_campaign=top_clis_article">Help</a> &middot; <a href="md-viewer.html?file=data/bash_example.md&utm_source=webcli&utm_medium=internal&utm_campaign=top_clis_article">Examples</a></p>
+    </section>
+
+    <section id="curl">
+      <h2><a class="headerlink" href="#curl">3. curl <span class="pilcrow">¶</span></a></h2>
+      <p class="article-meta">~44K Stack Overflow questions &middot; Present in nearly every HTTP/API tutorial ever written</p>
+      <p>
+        curl punches far above its SO question count. It appears in virtually every REST API documentation
+        page ("try it yourself" examples), every package installation script (<code>curl -fsSL ... | bash</code>),
+        every webhook tutorial, and every authentication guide. The entire developer-facing API economy
+        of the 2010s and early 2020s ran on curl examples. Its man page is one of the largest
+        single-tool references in existence. Despite a lower SO count than some tools below it, its surface
+        area across tutorials, READMEs, and official documentation is second to none among network tools.
+      </p>
+      <p><a href="md-viewer.html?file=data/curl_help.md&utm_source=webcli&utm_medium=internal&utm_campaign=top_clis_article">Help</a> &middot; <a href="md-viewer.html?file=data/curl_example.md&utm_source=webcli&utm_medium=internal&utm_campaign=top_clis_article">Examples</a></p>
+    </section>
+
+    <section id="npm">
+      <h2><a class="headerlink" href="#npm">4. npm <span class="pilcrow">¶</span></a></h2>
+      <p class="article-meta">~140K Stack Overflow questions &middot; Dominant package manager for the largest language ecosystem</p>
+      <p>
+        JavaScript and TypeScript are the most widely used programming languages (Stack Overflow surveys,
+        2015–2023). npm ships with Node.js and is the entry point for the entire JS ecosystem. Every React,
+        Angular, Vue, and Node tutorial begins with <code>npm install</code>. The npm registry hosts over
+        2.5 million packages. This volume of tutorials, quickstarts, and documentation pages makes npm one
+        of the most-referenced CLIs in the pre-2024 web corpus.
+      </p>
+      <p><a href="md-viewer.html?file=data/npm_help.md&utm_source=webcli&utm_medium=internal&utm_campaign=top_clis_article">Help</a> &middot; <a href="md-viewer.html?file=data/npm_example.md&utm_source=webcli&utm_medium=internal&utm_campaign=top_clis_article">Examples</a></p>
+    </section>
+
+    <section id="docker">
+      <h2><a class="headerlink" href="#docker">5. docker <span class="pilcrow">¶</span></a></h2>
+      <p class="article-meta">~155K Stack Overflow questions &middot; #1 "other tool" in Stack Overflow 2023 survey (53% adoption)</p>
+      <p>
+        Docker went from niche DevOps tooling to mainstream developer infrastructure between 2015 and 2023.
+        Its documentation, tutorials, and "getting started" guides are extensive. Docker Hub, the default
+        image registry, generated an enormous secondary corpus of Dockerfile examples and <code>docker run</code>
+        command references. The Stack Overflow 2023 survey placed Docker as the single most adopted
+        non-language tool, ahead of npm and pip for professional developers.
+      </p>
+      <p><a href="md-viewer.html?file=data/docker_help.md&utm_source=webcli&utm_medium=internal&utm_campaign=top_clis_article">Help</a> &middot; <a href="md-viewer.html?file=data/docker_example.md&utm_source=webcli&utm_medium=internal&utm_campaign=top_clis_article">Examples</a></p>
+    </section>
+
+    <section id="pip">
+      <h2><a class="headerlink" href="#pip">6. pip <span class="pilcrow">¶</span></a></h2>
+      <p class="article-meta">~24K Stack Overflow questions &middot; Ships with Python, the #1–3 language for a decade</p>
+      <p>
+        pip's Stack Overflow count understates its corpus presence because Python questions frequently
+        embed pip commands inline (e.g., <code>pip install requests</code> in code blocks) without tagging
+        pip explicitly. Python has ranked as the most wanted or most popular language in Stack Overflow
+        surveys for multiple consecutive years. Nearly every Python tutorial, data science notebook,
+        machine learning guide, and scientific computing README on the web begins with a pip install command.
+        Its training-data footprint is disproportionate to its standalone tag count.
+      </p>
+      <p><a href="md-viewer.html?file=data/pip_help.md&utm_source=webcli&utm_medium=internal&utm_campaign=top_clis_article">Help</a> &middot; <a href="md-viewer.html?file=data/pip_example.md&utm_source=webcli&utm_medium=internal&utm_campaign=top_clis_article">Examples</a></p>
+    </section>
+
+    <section id="grep">
+      <h2><a class="headerlink" href="#grep">7. grep <span class="pilcrow">¶</span></a></h2>
+      <p class="article-meta">POSIX utility &middot; In service since 1974 &middot; Saturates Unix tutorials, man pages, and scripting guides</p>
+      <p>
+        grep does not have a dominant SO question count as a standalone tool because its usage is woven
+        into tens of thousands of bash, awk, and shell-scripting answers. It appears in man pages, Unix
+        textbooks, every "how to search files" tutorial, and nearly every shell one-liner ever published.
+        The accumulated web presence of grep across 50 years of Unix documentation and the entire Stack
+        Overflow bash tag makes its total corpus presence very large even without a dedicated tag signature.
+      </p>
+      <p><a href="md-viewer.html?file=data/grep_help.md&utm_source=webcli&utm_medium=internal&utm_campaign=top_clis_article">Help</a> &middot; <a href="md-viewer.html?file=data/grep_example.md&utm_source=webcli&utm_medium=internal&utm_campaign=top_clis_article">Examples</a></p>
+    </section>
+
+    <section id="ssh">
+      <h2><a class="headerlink" href="#ssh">8. ssh <span class="pilcrow">¶</span></a></h2>
+      <p class="article-meta">~50K Stack Overflow questions &middot; Every server setup and deployment guide references it</p>
+      <p>
+        ssh is the lingua franca of remote server access. Every VPS tutorial ("how to set up a DigitalOcean
+        droplet"), every GitHub SSH key guide, every deployment walkthrough, every DevOps onboarding document,
+        and every "connecting to AWS EC2" article references ssh. Its usage spans development, sysadmin,
+        and security documentation, giving it broad cross-domain corpus coverage that a single SO question
+        count does not fully capture.
+      </p>
+      <p><a href="md-viewer.html?file=data/ssh_help.md&utm_source=webcli&utm_medium=internal&utm_campaign=top_clis_article">Help</a> &middot; <a href="md-viewer.html?file=data/ssh_example.md&utm_source=webcli&utm_medium=internal&utm_campaign=top_clis_article">Examples</a></p>
+    </section>
+
+    <section id="wget">
+      <h2><a class="headerlink" href="#wget">9. wget <span class="pilcrow">¶</span></a></h2>
+      <p class="article-meta">Smaller SO count than curl &middot; In service since 1996 &middot; Ubiquitous in Linux setup scripts</p>
+      <p>
+        wget predates curl on Linux systems and remains the default download utility on many Linux
+        distributions. Decades of "install X on Ubuntu/Debian" guides use <code>wget</code> to fetch
+        packages, tarballs, and install scripts. While curl has overtaken it in API tutorial contexts,
+        wget's long history means it appears across a wider historical slice of the pre-2024 corpus,
+        particularly in older Linux guides, academic software installation instructions, and open-source
+        project setup documentation.
+      </p>
+      <p><a href="md-viewer.html?file=data/wget_help.md&utm_source=webcli&utm_medium=internal&utm_campaign=top_clis_article">Help</a> &middot; <a href="md-viewer.html?file=data/wget_example.md&utm_source=webcli&utm_medium=internal&utm_campaign=top_clis_article">Examples</a></p>
+    </section>
+
+    <section id="make">
+      <h2><a class="headerlink" href="#make">10. make <span class="pilcrow">¶</span></a></h2>
+      <p class="article-meta">Build system since 1976 &middot; Present in nearly every "build from source" guide</p>
+      <p>
+        make is the original build automation tool and is included by default on virtually every Unix-like
+        system. Open-source C and C++ projects, Linux kernel documentation, and every "build from source"
+        README instruct users to run <code>make</code> or <code>make install</code>. Its presence in
+        academic software, systems programming documentation, and decades of open-source project guides
+        gives it sustained corpus weight. The Warp 2023 survey found make appearing consistently in shell
+        history analysis as one of the most-invoked commands by experienced developers.
+      </p>
+      <p><a href="md-viewer.html?file=data/make_help.md&utm_source=webcli&utm_medium=internal&utm_campaign=top_clis_article">Help</a> &middot; <a href="md-viewer.html?file=data/make_example.md&utm_source=webcli&utm_medium=internal&utm_campaign=top_clis_article">Examples</a></p>
+    </section>
+
+    <hr>
+
+    <section id="honorable-mentions">
+      <h2><a class="headerlink" href="#honorable-mentions">What was considered but ranked outside the top 10 <span class="pilcrow">¶</span></a></h2>
+      <table class="spec-table">
+        <thead>
+          <tr><th>Tool</th><th>Reason not in top 10</th></tr>
+        </thead>
+        <tbody>
+          <tr><td><code>sed</code> / <code>awk</code></td><td>Extremely common but primarily appear as command syntax within bash/grep answers rather than as standalone documented tools</td></tr>
+          <tr><td><code>terraform</code></td><td>High documentation volume but too specialized (DevOps/infra) to dominate a general pre-2024 web corpus</td></tr>
+          <tr><td><code>kubectl</code></td><td>Fast-growing pre-2024 but specialized; smaller overall corpus footprint than the top 10</td></tr>
+          <tr><td><code>ansible</code></td><td>Strong documentation but narrower audience than the top 10</td></tr>
+          <tr><td><code>vim</code> / <code>nano</code></td><td>Editors invoked from CLI; their documentation corpus is large, but they are categorized as editors more than CLI tools</td></tr>
+          <tr><td><code>yarn</code></td><td>Overlaps significantly with npm; npm documentation dwarfs it</td></tr>
+          <tr><td><code>brew</code> (Homebrew)</td><td>Warp 2023 named it third most-used CLI tool among its community, but its documentation is macOS-specific, narrowing its corpus share</td></tr>
+        </tbody>
+      </table>
+    </section>
+
+    <section id="sources">
+      <h2><a class="headerlink" href="#sources">Sources <span class="pilcrow">¶</span></a></h2>
+      <ul>
+        <li><a href="https://www.warp.dev/state-of-the-cli-2023?utm_source=webcli&utm_medium=referral&utm_campaign=top_clis_sources" rel="noopener">Warp State of the CLI 2023</a> survey (1,500+ developers)</li>
+        <li><a href="https://survey.stackoverflow.co/2022/?utm_source=webcli&utm_medium=referral&utm_campaign=top_clis_sources" rel="noopener">Stack Overflow Developer Survey 2022</a> and <a href="https://survey.stackoverflow.co/2023/?utm_source=webcli&utm_medium=referral&utm_campaign=top_clis_sources" rel="noopener">2023</a> (~90,000 respondents each)</li>
+        <li><a href="https://stackoverflow.com/tags?utm_source=webcli&utm_medium=referral&utm_campaign=top_clis_sources" rel="noopener">Stack Overflow tag question counts</a> (git ~152K, bash ~156K, docker ~155K, npm ~140K, curl ~44K, ssh ~50K, pip ~24K)</li>
+        <li><a href="https://github.blog/2023-11-08-the-state-of-open-source-and-ai/?utm_source=webcli&utm_medium=referral&utm_campaign=top_clis_sources" rel="noopener">GitHub Octoverse 2023</a> (100M+ new repositories in 2022; 420M+ total by Nov 2023)</li>
+        <li><a href="https://www.jetbrains.com/lp/devecosystem-2023/?utm_source=webcli&utm_medium=referral&utm_campaign=top_clis_sources" rel="noopener">JetBrains State of Developer Ecosystem 2023</a></li>
+        <li><a href="https://gitnux.org/git-statistics/?utm_source=webcli&utm_medium=referral&utm_campaign=top_clis_sources" rel="noopener">Git Statistics / gitnux.org market data report</a></li>
+      </ul>
+      <p>Raw data file: <a href="md-viewer.html?file=data/topclis.md&utm_source=webcli&utm_medium=internal&utm_campaign=top_clis_article"><code>topclis.md</code></a></p>
+    </section>
+
+    <footer class="page-footer">
+      <p>WebCLI Spec &middot; Draft v0.1 &middot; March 2026 &middot; <a href="https://github.com/webclihq/spec?utm_source=webcli&utm_medium=referral&utm_campaign=top_clis_footer" rel="noopener">GitHub</a> &middot; Released under <a href="https://creativecommons.org/licenses/by/4.0/?utm_source=webcli&utm_medium=referral&utm_campaign=top_clis_footer" rel="noopener">CC BY 4.0</a> &middot; Authored by <a href="https://github.com/chandler212" rel="noopener">@chandler212</a></p>
+      <p class="footer-disclaimer">No affiliation with or endorsement from any company or product referenced herein. All trademarks are the property of their respective owners.</p>
+    </footer>
+
+  </main>
+
+  <!-- Right TOC -->
+  <aside class="right-toc" aria-label="On this page">
+    <p class="toc-title">On this page</p>
+    <ul>
+      <li><a href="#git">1. git</a></li>
+      <li><a href="#bash">2. bash</a></li>
+      <li><a href="#curl">3. curl</a></li>
+      <li><a href="#npm">4. npm</a></li>
+      <li><a href="#docker">5. docker</a></li>
+      <li><a href="#pip">6. pip</a></li>
+      <li><a href="#grep">7. grep</a></li>
+      <li><a href="#ssh">8. ssh</a></li>
+      <li><a href="#wget">9. wget</a></li>
+      <li><a href="#make">10. make</a></li>
+      <li><a href="#honorable-mentions">Honorable mentions</a></li>
+      <li><a href="#sources">Sources</a></li>
+    </ul>
+  </aside>
+
+</div><!-- .page-wrap -->
+
+<script src="../assets/js/site.js"></script>
+
+</body>
+</html>

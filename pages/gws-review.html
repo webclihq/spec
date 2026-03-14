@@ -1,0 +1,429 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="icon" type="image/svg+xml" href="../assets/logo.svg">
+  <title>gws CLI Review — WebCLI</title>
+  <meta name="description" content="A critique of Google's gws CLI (v0.16.0) against the WebCLI LLM-fluent design patterns.">
+  <link rel="canonical" href="gws-review.html">
+  <link rel="stylesheet" href="../assets/css/style.css">
+</head>
+<body>
+
+<!-- MOBILE-HEADER -->
+<header class="mobile-header">
+  <label for="sidebar-toggle" class="nav-icon" aria-label="Toggle navigation">&#9776;</label>
+  <a class="site-title" href="../index.html">
+    <img src="../assets/logo.svg" alt="" class="header-logo" width="24" height="22">
+    WebCLI
+  </a>
+  <button class="theme-toggle" id="theme-btn" aria-label="Toggle theme">&#9788;</button>
+</header>
+<!-- /MOBILE-HEADER -->
+
+<input type="checkbox" id="sidebar-toggle" class="sidebar-toggle-input">
+
+<div class="page-wrap">
+
+  <!-- SIDEBAR -->
+<nav class="sidebar" aria-label="Site navigation">
+  <div class="sidebar-inner">
+    <div class="sidebar-brand">
+      <a href="../index.html" class="sidebar-brand-link">
+        <img src="../assets/logo.svg" alt="" class="sidebar-logo" width="28" height="25">
+        WebCLI Spec
+        <span class="version-badge">v0.1-draft</span>
+      </a>
+    </div>
+    <ul class="nav-tree">
+      <li><a href="../index.html#what-is-webcli">What is WebCLI?</a></li>
+      <li><a href="../index.html#canonical-clis">The 10 Canonical CLIs</a></li>
+      <li><a href="../index.html#research">Research &amp; Evidence</a></li>
+      <li>
+        <a href="../index.html#core-principles">Core Principles</a>
+        <ul>
+          <li><a href="../index.html#principle-help">Help Output</a></li>
+          <li><a href="../index.html#principle-flags">Flag Conventions</a></li>
+          <li><a href="../index.html#principle-subcommands">Subcommand Structure</a></li>
+          <li><a href="../index.html#principle-exit-codes">Exit Codes</a></li>
+          <li><a href="../index.html#principle-streams">stdout / stderr</a></li>
+        </ul>
+      </li>
+      <li>
+        <a href="../index.html#specification">Specification</a>
+        <ul>
+          <li><a href="../index.html#spec-universal-flags">§1 Universal Flags</a></li>
+          <li><a href="../index.html#spec-subcommand-structure">§2 Subcommand Structure</a></li>
+          <li><a href="../index.html#spec-help-access">§3 Help Access</a></li>
+          <li><a href="../index.html#spec-output-conventions">§4 Output Conventions</a></li>
+          <li><a href="../index.html#spec-json-output">§5 JSON Output</a></li>
+          <li><a href="../index.html#spec-verb-vocabulary">§6 Verb Vocabulary</a></li>
+          <li><a href="../index.html#spec-flag-naming">§7 Flag Naming</a></li>
+          <li><a href="../index.html#spec-positional-args">§8 Positional Arguments</a></li>
+          <li><a href="../index.html#spec-config-layering">§9 Config Layering</a></li>
+          <li><a href="../index.html#spec-piping">§10 Piping &amp; Composability</a></li>
+          <li><a href="../index.html#spec-summary">§11 Summary</a></li>
+        </ul>
+      </li>
+      <li><a href="../index.html#why-it-works">Why It Works</a></li>
+      <li><a href="../index.html#get-involved">Get Involved</a></li>
+      <li>
+        <span class="nav-section-label">Articles</span>
+        <ul>
+          <li><a href="ranking.html">CLI Rankings</a></li>
+          <li><a href="top-clis.html">Top 10 CLIs (Pre-2024)</a></li>
+          <li><a href="gws-review.html">gws CLI Review</a></li>
+          <li><a href="hubspot-review.html">HubSpot CLI Review</a></li>
+        </ul>
+      </li>
+      <li class="nav-collapsible">
+        <input type="checkbox" id="nav-evidence-toggle" class="nav-collapsible-input">
+        <label for="nav-evidence-toggle" class="nav-collapsible-label">Evidence Files <span class="nav-toggle-icon">&#9654;</span></label>
+        <ul class="nav-collapsible-list">
+          <li><a href="md-viewer.html?file=data/cli_design_patterns.md">cli_design_patterns.md</a></li>
+          <li><a href="md-viewer.html?file=data/topclis.md">topclis.md</a></li>
+          <li class="nav-cli-parent"><span class="nav-cli-name">git</span><ul class="nav-cli-sublist"><li><a href="md-viewer.html?file=data/git_help.md">help</a></li><li><a href="md-viewer.html?file=data/git_example.md">examples</a></li></ul></li>
+          <li class="nav-cli-parent"><span class="nav-cli-name">bash</span><ul class="nav-cli-sublist"><li><a href="md-viewer.html?file=data/bash_help.md">help</a></li><li><a href="md-viewer.html?file=data/bash_example.md">examples</a></li></ul></li>
+          <li class="nav-cli-parent"><span class="nav-cli-name">curl</span><ul class="nav-cli-sublist"><li><a href="md-viewer.html?file=data/curl_help.md">help</a></li><li><a href="md-viewer.html?file=data/curl_example.md">examples</a></li></ul></li>
+          <li class="nav-cli-parent"><span class="nav-cli-name">npm</span><ul class="nav-cli-sublist"><li><a href="md-viewer.html?file=data/npm_help.md">help</a></li><li><a href="md-viewer.html?file=data/npm_example.md">examples</a></li></ul></li>
+          <li class="nav-cli-parent"><span class="nav-cli-name">docker</span><ul class="nav-cli-sublist"><li><a href="md-viewer.html?file=data/docker_help.md">help</a></li><li><a href="md-viewer.html?file=data/docker_example.md">examples</a></li></ul></li>
+          <li class="nav-cli-parent"><span class="nav-cli-name">pip</span><ul class="nav-cli-sublist"><li><a href="md-viewer.html?file=data/pip_help.md">help</a></li><li><a href="md-viewer.html?file=data/pip_example.md">examples</a></li></ul></li>
+          <li class="nav-cli-parent"><span class="nav-cli-name">grep</span><ul class="nav-cli-sublist"><li><a href="md-viewer.html?file=data/grep_help.md">help</a></li><li><a href="md-viewer.html?file=data/grep_example.md">examples</a></li></ul></li>
+          <li class="nav-cli-parent"><span class="nav-cli-name">ssh</span><ul class="nav-cli-sublist"><li><a href="md-viewer.html?file=data/ssh_help.md">help</a></li><li><a href="md-viewer.html?file=data/ssh_example.md">examples</a></li></ul></li>
+          <li class="nav-cli-parent"><span class="nav-cli-name">wget</span><ul class="nav-cli-sublist"><li><a href="md-viewer.html?file=data/wget_help.md">help</a></li><li><a href="md-viewer.html?file=data/wget_example.md">examples</a></li></ul></li>
+          <li class="nav-cli-parent"><span class="nav-cli-name">make</span><ul class="nav-cli-sublist"><li><a href="md-viewer.html?file=data/make_help.md">help</a></li><li><a href="md-viewer.html?file=data/make_example.md">examples</a></li></ul></li>
+        </ul>
+      </li>
+    </ul>
+    <div class="sidebar-footer">
+      <button class="theme-toggle theme-toggle-sidebar" id="theme-btn-sidebar" aria-label="Toggle theme">
+        <span class="theme-icon">&#9788;</span> Toggle theme
+      </button>
+    </div>
+  </div>
+</nav>
+<!-- /SIDEBAR -->
+
+  <main class="content" id="main-content">
+
+    <div class="article-hero">
+      <p class="hero-eyebrow">Article &middot; CLI Review</p>
+      <h1>gws CLI Review</h1>
+      <p class="article-meta">Google Workspace CLI v0.16.0 &middot; Released March 2, 2026 &middot; Reviewed against WebCLI LLM-fluent design patterns</p>
+    </div>
+
+    <div class="review-score-block">
+      <div class="score-badge score-good">72</div>
+      <div>
+        <div class="score-label">WebCLI Score</div>
+        <div class="score-meta">Strong foundation; three fixable gaps keep it from a higher score.</div>
+      </div>
+      <a class="score-link" href="#scoring">How scores work &#8594;</a>
+    </div>
+
+    <section id="intro">
+      <p>
+        <code>gws</code> is Google's open-source command-line interface for the Google Workspace APIs:
+        Drive, Gmail, Calendar, Sheets, Docs, Chat, and more. It launched on March 2, 2026 and
+        reached 14,600+ GitHub stars within days. Its stated design goals set it apart from most CLIs:
+        it is explicitly built for <strong>AI agent / MCP tool-calling</strong>, and it derives its
+        entire command tree dynamically from Google's Discovery Documents rather than hand-coding each
+        subcommand.
+      </p>
+      <p>
+        That design context matters. A fair critique requires distinguishing between patterns that
+        apply universally and patterns that conflict with <code>gws</code>'s intentional architecture.
+        This review does both.
+      </p>
+      <div class="admonition note">
+        <p class="admonition-title">What this review is</p>
+        <p>
+          An analysis of <code>gws --help</code>, <code>gws &lt;service&gt; --help</code>, and
+          <code>gws &lt;service&gt; &lt;resource&gt; &lt;method&gt; --help</code> against the
+          <a href="md-viewer.html?file=data/cli_design_patterns.md">WebCLI design patterns</a>
+          synthesized from git, bash, curl, npm, docker, pip, grep, ssh, wget, and make.
+        </p>
+      </div>
+    </section>
+
+    <hr>
+
+    <section id="scoring">
+      <h2><a class="headerlink" href="#scoring">Scoring methodology <span class="pilcrow">¶</span></a></h2>
+      <p>
+        Every WebCLI review assigns a score from 0 to 100. The score is calculated across
+        ten standard dimensions, each worth 10 points. <strong>Pass</strong> = 10 pts,
+        <strong>Partial</strong> = 5 pts, <strong>Fail</strong> = 0 pts. <strong>Intentional
+        tradeoff</strong> = 5 pts; these are not penalized as failures, but full credit
+        requires a full pass.
+      </p>
+      <table class="spec-table">
+        <thead>
+          <tr><th>#</th><th>Dimension</th><th>What is checked</th><th>Points</th></tr>
+        </thead>
+        <tbody>
+          <tr><td>1</td><td>Help system</td><td><code>-h</code>/<code>--help</code> works at every level of the command tree; consistent renderer</td><td>0–10</td></tr>
+          <tr><td>2</td><td><code>--version</code></td><td><code>--version</code> and <code>-V</code> both present and correct</td><td>0–10</td></tr>
+          <tr><td>3</td><td>Verbose flag</td><td><code>-v</code>/<code>--verbose</code> intercepted and handled; not misrouted or silently dropped</td><td>0–10</td></tr>
+          <tr><td>4</td><td>Quiet flag</td><td><code>-q</code>/<code>--quiet</code> suppresses non-data output; safe for piping and CI</td><td>0–10</td></tr>
+          <tr><td>5</td><td>Output streams</td><td>Errors go to stderr; data goes to stdout; exit codes non-zero on failure</td><td>0–10</td></tr>
+          <tr><td>6</td><td>Machine-readable output</td><td>JSON (or equivalent) output available; safely pipeable to <code>jq</code></td><td>0–10</td></tr>
+          <tr><td>7</td><td>Exit codes</td><td>Distinct exit codes documented in <code>--help</code>; caller can branch without parsing text</td><td>0–10</td></tr>
+          <tr><td>8</td><td>Flag naming</td><td>Kebab-case flags; no camelCase leaks; short aliases consistent</td><td>0–10</td></tr>
+          <tr><td>9</td><td>Subcommand structure</td><td>Consistent verb/noun or noun/verb pattern; predictable discovery</td><td>0–10</td></tr>
+          <tr><td>10</td><td>Composability</td><td>Pipeable output, <code>--dry-run</code>, shell completion, or equivalent scripting options</td><td>0–10</td></tr>
+        </tbody>
+      </table>
+      <p>
+        All ten reviewed CLIs are ranked on the <a href="ranking.html">CLI Rankings</a> page.
+      </p>
+    </section>
+
+    <hr>
+
+    <section id="scorecard">
+      <h2><a class="headerlink" href="#scorecard">Scorecard <span class="pilcrow">¶</span></a></h2>
+      <table class="spec-table">
+        <thead>
+          <tr><th>Design Rule</th><th>Status</th><th>Notes</th></tr>
+        </thead>
+        <tbody>
+          <tr><td><code>-h</code> / <code>--help</code></td><td><strong>Pass</strong></td><td>Works at every level of the command tree</td></tr>
+          <tr><td><code>--version</code></td><td><strong>Pass</strong></td><td>Prints version correctly</td></tr>
+          <tr><td><code>-V</code> short version flag</td><td><strong>Partial</strong></td><td><code>--version</code> works; <code>-V</code> is absent</td></tr>
+          <tr><td><code>-v</code> / <code>--verbose</code></td><td><strong>Fail</strong></td><td><code>-v</code> is parsed as a service name and returns a validation error</td></tr>
+          <tr><td><code>-q</code> / <code>--quiet</code></td><td><strong>Fail</strong></td><td>Absent entirely; relevant for scripting and agent use</td></tr>
+          <tr><td><code>--dry-run</code></td><td><strong>Pass</strong></td><td>Present on every resource subcommand</td></tr>
+          <tr><td><code>-o</code> / <code>--output</code></td><td><strong>Partial</strong></td><td>Present but scoped to binary file downloads only</td></tr>
+          <tr><td>Errors &#8594; stderr</td><td><strong>Pass</strong></td><td>Consistent throughout</td></tr>
+          <tr><td>Exit codes documented</td><td><strong>Pass</strong></td><td>Five distinct codes; exceeds the standard</td></tr>
+          <tr><td>JSON-first output</td><td><strong>Pass</strong></td><td>JSON is the default; <code>--format</code> supports table, yaml, csv</td></tr>
+          <tr><td>Consistent help rendering</td><td><strong>Fail</strong></td><td>Root help is hand-crafted text; subcommand help is <code>clap</code>-generated (two different formats)</td></tr>
+          <tr><td>Subcommand structure</td><td><strong>Intentional tradeoff</strong></td><td>See analysis below</td></tr>
+          <tr><td><code>--params &lt;JSON&gt;</code> blob</td><td><strong>Intentional tradeoff</strong></td><td>See analysis below</td></tr>
+          <tr><td>Verb vocabulary / kebab-case</td><td><strong>Partial</strong></td><td>Standard verbs mixed with camelCase API names (<code>emptyTrash</code>, <code>generateIds</code>)</td></tr>
+          <tr><td><code>--config &lt;file&gt;</code></td><td><strong>Intentional tradeoff</strong></td><td>Env vars preferred for agent/container environments</td></tr>
+          <tr><td>Env var naming consistency</td><td><strong>Partial</strong></td><td><code>GOOGLE_WORKSPACE_PROJECT_ID</code> breaks the <code>_CLI_</code> prefix used by all other vars</td></tr>
+        </tbody>
+      </table>
+    </section>
+
+    <hr>
+
+    <section id="passes">
+      <h2><a class="headerlink" href="#passes">What it does well <span class="pilcrow">¶</span></a></h2>
+
+      <h3 id="help">Help system</h3>
+      <p>
+        Both <code>gws --help</code> and <code>gws -h</code> work, and the pattern cascades cleanly
+        through the full command tree: <code>gws drive --help</code>,
+        <code>gws drive files --help</code>, <code>gws drive files list --help</code> all produce
+        relevant output. This matches the highest-confidence help pattern from the design guide.
+      </p>
+
+      <h3 id="exit-codes">Exit codes</h3>
+      <p>
+        <code>gws</code> documents five distinct exit codes in its top-level help, a level of
+        specificity that exceeds every tool in the reference set:
+      </p>
+      <table class="spec-table">
+        <thead><tr><th>Code</th><th>Meaning</th></tr></thead>
+        <tbody>
+          <tr><td>0</td><td>Success</td></tr>
+          <tr><td>1</td><td>API error — Google returned an error response</td></tr>
+          <tr><td>2</td><td>Auth error — credentials missing or invalid</td></tr>
+          <tr><td>3</td><td>Validation — bad arguments or input</td></tr>
+          <tr><td>4</td><td>Discovery — could not fetch API schema</td></tr>
+          <tr><td>5</td><td>Internal — unexpected failure</td></tr>
+        </tbody>
+      </table>
+      <p>
+        This is excellent for agent use: a calling system can branch on exit code without
+        parsing error text.
+      </p>
+
+      <h3 id="json-output">JSON-first output</h3>
+      <p>
+        JSON is the default output format, not an opt-in. <code>--format</code> also accepts
+        <code>table</code>, <code>yaml</code>, and <code>csv</code>. All responses are immediately
+        pipeable to <code>jq</code>. The <code>--page-all</code> flag streams paginated results as
+        NDJSON, a composability feature none of the canonical ten tools offer.
+      </p>
+
+      <h3 id="dry-run"><code>--dry-run</code></h3>
+      <p>
+        Present on every resource subcommand (not just the top level). Validates a request locally
+        without sending it to Google's API. Essential for an agent that might construct requests
+        programmatically.
+      </p>
+
+      <h3 id="env-vars">Environment variables</h3>
+      <p>
+        All eleven environment variables are documented in the top-level <code>--help</code> output:
+        a practice that the canonical ten tools do inconsistently at best.
+      </p>
+    </section>
+
+    <hr>
+
+    <section id="real-problems">
+      <h2><a class="headerlink" href="#real-problems">Real problems <span class="pilcrow">¶</span></a></h2>
+      <p>
+        These are not tradeoffs. They are gaps that conflict with <code>gws</code>'s own stated goals.
+      </p>
+
+      <h3 id="verbose-flag"><code>-v</code> is routed to the service parser</h3>
+      <p>
+        Running <code>gws -v</code> returns a structured JSON validation error:
+      </p>
+      <pre><code>{"error":{"code":400,"message":"Unknown service '-v'. Known services: drive, sheets, ...","reason":"validationError"}}</code></pre>
+      <p>
+        <code>-v</code> / <code>--verbose</code> is a "Very high" confidence flag, one that an LLM
+        will generate reflexively. Routing it into the service parser and returning an API-style
+        error is the worst possible outcome: it is confusing, it exits non-zero, and the error
+        message implies the user typed a wrong API name. The flag should be intercepted at the
+        top level before service dispatch.
+      </p>
+
+      <h3 id="quiet-flag"><code>--quiet</code> is absent</h3>
+      <p>
+        There is no <code>-q</code> / <code>--quiet</code> flag. For a tool explicitly designed for
+        AI agents and scripting, suppressing non-data output is table stakes. The design guide rates
+        this 8/10 across the canonical CLIs. Its absence is more damaging here than it would be for
+        a human-facing tool.
+      </p>
+
+      <h3 id="help-rendering">Two different help renderers</h3>
+      <p>
+        <code>gws --help</code> produces hand-crafted prose. <code>gws drive --help</code> produces
+        <code>clap</code>-formatted output with <code>Usage:</code>, <code>Commands:</code>, and
+        <code>Options:</code> headers. The visual language, section names, and flag formatting differ
+        between the two. A tool (or LLM) that parses <code>--help</code> output to understand command
+        structure sees two incompatible schemas within the same binary.
+      </p>
+    </section>
+
+    <hr>
+
+    <section id="tradeoffs">
+      <h2><a class="headerlink" href="#tradeoffs">Intentional tradeoffs <span class="pilcrow">¶</span></a></h2>
+      <p>
+        These patterns diverge from the design guide but for clear architectural reasons.
+      </p>
+
+      <h3 id="subcommand-structure">Subcommand structure: <code>&lt;service&gt; &lt;resource&gt; &lt;method&gt;</code></h3>
+      <p>
+        The design guide recommends <code>&lt;verb&gt; &lt;noun&gt;</code> (git/docker/npm style).
+        <code>gws</code> uses <code>&lt;service&gt; &lt;resource&gt; &lt;method&gt;</code>
+        (noun-first, verb-last):
+      </p>
+      <pre><code>gws drive files list
+gws gmail users messages list</code></pre>
+      <p>
+        This is the right tradeoff here. <code>gws</code> derives its entire command tree
+        dynamically from Google's Discovery Documents. That structure is
+        <code>service → resource → method</code>. Inverting it to verb-first would break the
+        1:1 mapping that makes the tool self-updating and keeps it in sync with Google's own
+        API documentation. For an agent that needs to cross-reference the Google API docs,
+        structural fidelity is more valuable than verb-first familiarity.
+      </p>
+
+      <h3 id="params-blob"><code>--params &lt;JSON&gt;</code> instead of individual flags</h3>
+      <p>
+        The design guide recommends individual named flags for parameters. <code>gws</code>
+        bundles all query parameters into a single JSON blob:
+      </p>
+      <pre><code>gws drive files list --params '{"pageSize": 10, "q": "mimeType=\"application/pdf\""}'</code></pre>
+      <p>
+        For a statically-defined CLI, this would be an antipattern. For a dynamically-generated
+        CLI that maps to hundreds of Google API methods, each with their own parameter sets, it
+        is a reasonable choice. The companion <code>gws schema drive.files.list</code> command
+        gives agents a machine-readable parameter schema: the intended workflow is
+        schema-first discovery, not flag guessing.
+      </p>
+
+      <h3 id="no-config-flag">No <code>--config &lt;file&gt;</code> flag</h3>
+      <p>
+        The design guide recommends a <code>--config</code> flag. <code>gws</code> uses
+        <code>GOOGLE_WORKSPACE_CLI_CONFIG_DIR</code> instead. In agent and container environments
+        (the primary deployment target), environment variables are the standard credential injection
+        mechanism. Secrets managers, CI systems, and Kubernetes all inject via env vars, not
+        config flags. This is the right call for this tool's audience.
+      </p>
+
+      <h3 id="camel-case">camelCase subcommand names</h3>
+      <p>
+        Subcommands like <code>emptyTrash</code>, <code>generateIds</code>, and
+        <code>modifyLabels</code> violate the kebab-case convention. But they mirror Google's
+        API method names exactly, which means any developer reading the Google API documentation
+        can predict the correct subcommand without guessing. The tradeoff is correctness of
+        API mapping over CLI naming convention, reasonable for a tool whose primary documentation
+        is the Google API reference.
+      </p>
+    </section>
+
+    <hr>
+
+    <section id="summary">
+      <h2><a class="headerlink" href="#summary">Summary <span class="pilcrow">¶</span></a></h2>
+      <p>
+        <code>gws</code> makes conscious, defensible architectural decisions that diverge from
+        the conventional CLI playbook, and most of those decisions are correct given its design
+        goals. The real problems are narrower: <code>-v</code> being mis-routed into the service
+        parser, the absence of <code>--quiet</code>, and the inconsistent help rendering.
+        None of those are architectural tradeoffs; they are just gaps.
+      </p>
+      <p>
+        The exit code design, JSON-first output, <code>--page-all</code> NDJSON streaming, and
+        per-command <code>--dry-run</code> are genuinely ahead of the reference set. For a tool
+        released in its first two weeks of life at v0.16.0, the base is solid.
+      </p>
+    </section>
+
+    <footer class="page-footer">
+      <p>WebCLI Spec &middot; Draft v0.1 &middot; March 2026 &middot; <a href="https://github.com/webclihq/spec" rel="noopener">GitHub</a> &middot; Released under <a href="https://creativecommons.org/licenses/by/4.0/" rel="noopener">CC BY 4.0</a> &middot; Authored by <a href="https://github.com/chandler212" rel="noopener">@chandler212</a></p>
+      <p class="footer-disclaimer">No affiliation with or endorsement from Google or any company referenced herein. All trademarks are the property of their respective owners.</p>
+    </footer>
+
+  </main>
+
+  <aside class="right-toc" aria-label="On this page">
+    <p class="toc-title">On this page</p>
+    <ul>
+      <li><a href="#scoring">Scoring methodology</a></li>
+      <li><a href="#scorecard">Scorecard</a></li>
+      <li><a href="#passes">What it does well</a>
+        <ul>
+          <li><a href="#help">Help system</a></li>
+          <li><a href="#exit-codes">Exit codes</a></li>
+          <li><a href="#json-output">JSON-first output</a></li>
+          <li><a href="#dry-run">--dry-run</a></li>
+          <li><a href="#env-vars">Env vars</a></li>
+        </ul>
+      </li>
+      <li><a href="#real-problems">Real problems</a>
+        <ul>
+          <li><a href="#verbose-flag">-v mis-routed</a></li>
+          <li><a href="#quiet-flag">--quiet absent</a></li>
+          <li><a href="#help-rendering">Split help renderers</a></li>
+        </ul>
+      </li>
+      <li><a href="#tradeoffs">Intentional tradeoffs</a>
+        <ul>
+          <li><a href="#subcommand-structure">Subcommand structure</a></li>
+          <li><a href="#params-blob">--params blob</a></li>
+          <li><a href="#no-config-flag">No --config flag</a></li>
+          <li><a href="#camel-case">camelCase names</a></li>
+        </ul>
+      </li>
+      <li><a href="#summary">Summary</a></li>
+    </ul>
+  </aside>
+
+</div>
+
+<script src="../assets/js/site.js"></script>
+
+</body>
+</html>

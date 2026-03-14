@@ -1,0 +1,826 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="icon" type="image/svg+xml" href="assets/logo.svg">
+  <title>WebCLI Spec — LLM-Fluent CLI Design</title>
+  <meta name="description" content="A specification for designing CLIs that LLMs already understand — based on patterns saturated across pre-2024 training data.">
+  <link rel="stylesheet" href="assets/css/style.css">
+</head>
+<body>
+
+<!-- MOBILE-HEADER -->
+<header class="mobile-header">
+  <label for="sidebar-toggle" class="nav-icon" aria-label="Toggle navigation">&#9776;</label>
+  <a class="site-title" href="index.html">
+    <img src="assets/logo.svg" alt="" class="header-logo" width="24" height="22">
+    WebCLI
+  </a>
+  <button class="theme-toggle" id="theme-btn" aria-label="Toggle theme">&#9788;</button>
+</header>
+<!-- /MOBILE-HEADER -->
+
+<!-- Sidebar toggle (CSS checkbox hack) -->
+<input type="checkbox" id="sidebar-toggle" class="sidebar-toggle-input">
+
+<div class="page-wrap">
+
+  <!-- SIDEBAR -->
+<nav class="sidebar" aria-label="Site navigation">
+  <div class="sidebar-inner">
+    <div class="sidebar-brand">
+      <a href="index.html" class="sidebar-brand-link">
+        <img src="assets/logo.svg" alt="" class="sidebar-logo" width="28" height="25">
+        WebCLI Spec
+        <span class="version-badge">v0.1-draft</span>
+      </a>
+    </div>
+    <ul class="nav-tree">
+      <li><a href="index.html#what-is-webcli">What is WebCLI?</a></li>
+      <li><a href="index.html#canonical-clis">The 10 Canonical CLIs</a></li>
+      <li><a href="index.html#research">Research &amp; Evidence</a></li>
+      <li>
+        <a href="index.html#core-principles">Core Principles</a>
+        <ul>
+          <li><a href="index.html#principle-help">Help Output</a></li>
+          <li><a href="index.html#principle-flags">Flag Conventions</a></li>
+          <li><a href="index.html#principle-subcommands">Subcommand Structure</a></li>
+          <li><a href="index.html#principle-exit-codes">Exit Codes</a></li>
+          <li><a href="index.html#principle-streams">stdout / stderr</a></li>
+        </ul>
+      </li>
+      <li>
+        <a href="index.html#specification">Specification</a>
+        <ul>
+          <li><a href="index.html#spec-universal-flags">§1 Universal Flags</a></li>
+          <li><a href="index.html#spec-subcommand-structure">§2 Subcommand Structure</a></li>
+          <li><a href="index.html#spec-help-access">§3 Help Access</a></li>
+          <li><a href="index.html#spec-output-conventions">§4 Output Conventions</a></li>
+          <li><a href="index.html#spec-json-output">§5 JSON Output</a></li>
+          <li><a href="index.html#spec-verb-vocabulary">§6 Verb Vocabulary</a></li>
+          <li><a href="index.html#spec-flag-naming">§7 Flag Naming</a></li>
+          <li><a href="index.html#spec-positional-args">§8 Positional Arguments</a></li>
+          <li><a href="index.html#spec-config-layering">§9 Config Layering</a></li>
+          <li><a href="index.html#spec-piping">§10 Piping &amp; Composability</a></li>
+          <li><a href="index.html#spec-summary">§11 Summary</a></li>
+        </ul>
+      </li>
+      <li><a href="index.html#why-it-works">Why It Works</a></li>
+      <li><a href="index.html#get-involved">Get Involved</a></li>
+      <li>
+        <span class="nav-section-label">Articles</span>
+        <ul>
+          <li><a href="pages/ranking.html">CLI Rankings</a></li>
+          <li><a href="pages/top-clis.html">Top 10 CLIs (Pre-2024)</a></li>
+          <li><a href="pages/gws-review.html">gws CLI Review</a></li>
+          <li><a href="pages/hubspot-review.html">HubSpot CLI Review</a></li>
+        </ul>
+      </li>
+      <li class="nav-collapsible">
+        <input type="checkbox" id="nav-evidence-toggle" class="nav-collapsible-input">
+        <label for="nav-evidence-toggle" class="nav-collapsible-label">Evidence Files <span class="nav-toggle-icon">&#9654;</span></label>
+        <ul class="nav-collapsible-list">
+          <li><a href="pages/md-viewer.html?file=data/cli_design_patterns.md">cli_design_patterns.md</a></li>
+          <li><a href="pages/md-viewer.html?file=data/topclis.md">topclis.md</a></li>
+          <li class="nav-cli-parent"><span class="nav-cli-name">git</span><ul class="nav-cli-sublist"><li><a href="pages/md-viewer.html?file=data/git_help.md">help</a></li><li><a href="pages/md-viewer.html?file=data/git_example.md">examples</a></li></ul></li>
+          <li class="nav-cli-parent"><span class="nav-cli-name">bash</span><ul class="nav-cli-sublist"><li><a href="pages/md-viewer.html?file=data/bash_help.md">help</a></li><li><a href="pages/md-viewer.html?file=data/bash_example.md">examples</a></li></ul></li>
+          <li class="nav-cli-parent"><span class="nav-cli-name">curl</span><ul class="nav-cli-sublist"><li><a href="pages/md-viewer.html?file=data/curl_help.md">help</a></li><li><a href="pages/md-viewer.html?file=data/curl_example.md">examples</a></li></ul></li>
+          <li class="nav-cli-parent"><span class="nav-cli-name">npm</span><ul class="nav-cli-sublist"><li><a href="pages/md-viewer.html?file=data/npm_help.md">help</a></li><li><a href="pages/md-viewer.html?file=data/npm_example.md">examples</a></li></ul></li>
+          <li class="nav-cli-parent"><span class="nav-cli-name">docker</span><ul class="nav-cli-sublist"><li><a href="pages/md-viewer.html?file=data/docker_help.md">help</a></li><li><a href="pages/md-viewer.html?file=data/docker_example.md">examples</a></li></ul></li>
+          <li class="nav-cli-parent"><span class="nav-cli-name">pip</span><ul class="nav-cli-sublist"><li><a href="pages/md-viewer.html?file=data/pip_help.md">help</a></li><li><a href="pages/md-viewer.html?file=data/pip_example.md">examples</a></li></ul></li>
+          <li class="nav-cli-parent"><span class="nav-cli-name">grep</span><ul class="nav-cli-sublist"><li><a href="pages/md-viewer.html?file=data/grep_help.md">help</a></li><li><a href="pages/md-viewer.html?file=data/grep_example.md">examples</a></li></ul></li>
+          <li class="nav-cli-parent"><span class="nav-cli-name">ssh</span><ul class="nav-cli-sublist"><li><a href="pages/md-viewer.html?file=data/ssh_help.md">help</a></li><li><a href="pages/md-viewer.html?file=data/ssh_example.md">examples</a></li></ul></li>
+          <li class="nav-cli-parent"><span class="nav-cli-name">wget</span><ul class="nav-cli-sublist"><li><a href="pages/md-viewer.html?file=data/wget_help.md">help</a></li><li><a href="pages/md-viewer.html?file=data/wget_example.md">examples</a></li></ul></li>
+          <li class="nav-cli-parent"><span class="nav-cli-name">make</span><ul class="nav-cli-sublist"><li><a href="pages/md-viewer.html?file=data/make_help.md">help</a></li><li><a href="pages/md-viewer.html?file=data/make_example.md">examples</a></li></ul></li>
+        </ul>
+      </li>
+    </ul>
+    <div class="sidebar-footer">
+      <button class="theme-toggle theme-toggle-sidebar" id="theme-btn-sidebar" aria-label="Toggle theme">
+        <span class="theme-icon">&#9788;</span> Toggle theme
+      </button>
+    </div>
+  </div>
+</nav>
+<!-- /SIDEBAR -->
+
+  <!-- Main content -->
+  <main class="content" id="main-content">
+
+    <!-- Hero -->
+    <section class="hero" id="top">
+      <p class="hero-eyebrow">Open Specification &middot; Draft v0.1</p>
+      <h1>WebCLI Spec</h1>
+      <div class="hero-stats">
+        <div class="hero-stat">
+          <p class="hero-stat-value">40%+</p>
+          <p class="hero-stat-label">of public repos contain <code>git</code></p>
+        </div>
+        <div class="hero-stat">
+          <p class="hero-stat-value">majority</p>
+          <p class="hero-stat-label">of API docs use <code>curl</code> examples</p>
+        </div>
+        <div class="hero-stat">
+          <p class="hero-stat-value">2016–2024</p>
+          <p class="hero-stat-label"><code>docker</code> in nearly every DevOps tutorial</p>
+        </div>
+      </div>
+      <p class="hero-lead">LLMs have seen their flag conventions, subcommand structures, and output formats billions of times. Build your CLI to match well-known patterns so LLMs can invoke it correctly from just a name and a task description.</p>
+      <div class="hero-actions">
+        <a href="#specification" class="btn-primary">Read the Spec</a>
+        <a href="#what-is-webcli" class="btn-secondary">Learn more</a>
+      </div>
+      <div class="hero-compare">
+        <div class="hero-compare-pane">
+          <p class="hero-compare-label label-good">WebCLI-compliant</p>
+          <pre><code><span class="prompt">$</span> webcli contact list --output json
+[
+  {"id": "c_1a2b", "name": "Priya Mehta",
+   "company": "Acme Corp",   "stage": "qualified"},
+  {"id": "c_3c4d", "name": "Luis Vargas",
+   "company": "Beta Inc",    "stage": "proposal"}
+]
+
+<span class="prompt">$</span> webcli deal create \
+    --contact c_1a2b \
+    --value 24000 \
+    --stage proposal
+Deal d_9f1e created.</code></pre>
+        </div>
+        <div class="hero-compare-pane">
+          <p class="hero-compare-label label-bad">Non-compliant</p>
+          <pre><code><span class="prompt">$</span> webcli --listContacts
+Priya Mehta (Acme Corp) [qualified]
+Luis Vargas (Beta Inc) [proposal]
+
+<span class="prompt">$</span> webcli --createDeal \
+    --contactId=c_1a2b \
+    --dealValue=24000 \
+    --dealStage=proposal
+Success!</code></pre>
+        </div>
+      </div>
+    </section>
+
+    <hr>
+
+    <!-- Spec metadata -->
+    <section id="about-this-document">
+      <dl class="spec-meta">
+        <div class="spec-meta-row">
+          <dt>Version</dt>
+          <dd>0.1-draft</dd>
+        </div>
+        <div class="spec-meta-row">
+          <dt>Published</dt>
+          <dd>March 13, 2026</dd>
+        </div>
+        <div class="spec-meta-row">
+          <dt>Author</dt>
+          <dd><a href="https://github.com/chandler212" rel="noopener">@chandler212</a></dd>
+        </div>
+        <div class="spec-meta-row">
+          <dt>Repository</dt>
+          <dd><a href="https://github.com/webclihq/spec" rel="noopener">github.com/webclihq/spec</a></dd>
+        </div>
+        <div class="spec-meta-row">
+          <dt>License</dt>
+          <dd><a href="https://creativecommons.org/licenses/by/4.0/" rel="noopener">CC BY 4.0</a></dd>
+        </div>
+        <div class="spec-meta-row">
+          <dt>Status</dt>
+          <dd>Draft &mdash; open for community input</dd>
+        </div>
+      </dl>
+    </section>
+
+    <hr>
+
+    <!-- Disclaimer -->
+    <section id="disclaimer">
+      <div class="admonition warning">
+        <p class="admonition-title">No affiliation</p>
+        <p>
+          This specification is an independent research project. It has no affiliation with, endorsement from,
+          or relationship to any company or product referenced herein, including but not limited to Git, Docker,
+          npm, pip, curl, OpenSSH, GNU make, or GNU wget. All trademarks are the property of their respective owners.
+        </p>
+      </div>
+    </section>
+
+    <hr>
+    <section id="what-is-webcli">
+      <h2><a class="headerlink" href="#what-is-webcli">What is WebCLI? <span class="pilcrow">¶</span></a></h2>
+      <p>
+        When a developer asks an LLM to write a shell script using <code>git</code>, <code>curl</code>, or <code>docker</code>,
+        the model gets it right: flags, subcommands, output format and all. It doesn't need documentation
+        in the prompt. It already knows.
+      </p>
+      <p>
+        That's not magic. It's saturation. These tools have appeared billions of times in pre-2024 training data:
+        in READMEs, Stack Overflow answers, blog posts, CI configs, and shell scripts. The patterns are
+        <em>baked in</em>.
+      </p>
+      <p>
+        <strong>WebCLI is a specification</strong> for building new CLIs that match those saturated patterns closely
+        enough that LLMs already "know" how your tool works from day one, without any training, documentation
+        injection, or special prompting.
+      </p>
+
+      <div class="admonition note">
+        <p class="admonition-title">Scope</p>
+        <p>WebCLI covers command-line interface <em>design</em>: help text format, flag conventions, subcommand structure, exit codes, and output contracts. It does not prescribe implementation language or framework.</p>
+      </div>
+    </section>
+
+    <!-- The 10 Canonical CLIs -->
+    <section id="canonical-clis">
+      <h2><a class="headerlink" href="#canonical-clis">The 10 Canonical CLIs <span class="pilcrow">¶</span></a></h2>
+      <p>
+        The WebCLI spec is derived from analyzing the help output and thousands of example invocations of the
+        ten CLIs most heavily represented in LLM pre-training corpora. These tools define the pattern language
+        that models internalize.
+      </p>
+      <table class="spec-table">
+        <thead>
+          <tr>
+            <th>CLI</th>
+            <th>Domain</th>
+            <th>Key Patterns</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><a href="pages/md-viewer.html?file=data/git_help.md&utm_source=webcli&utm_medium=internal&utm_campaign=canonical_clis"><code>git</code></a></td>
+            <td>Version control</td>
+            <td>Verb subcommands, <code>--flag</code>, porcelain output mode</td>
+          </tr>
+          <tr>
+            <td><a href="pages/md-viewer.html?file=data/bash_help.md&utm_source=webcli&utm_medium=internal&utm_campaign=canonical_clis"><code>bash</code></a></td>
+            <td>Shell / scripting</td>
+            <td>Exit codes, pipelines, <code>-e</code>/<code>-x</code>/<code>-o pipefail</code></td>
+          </tr>
+          <tr>
+            <td><a href="pages/md-viewer.html?file=data/curl_help.md&utm_source=webcli&utm_medium=internal&utm_campaign=canonical_clis"><code>curl</code></a></td>
+            <td>HTTP / transfer</td>
+            <td>Single-letter + long flags, <code>-o</code>/<code>-X</code>/<code>-H</code> idioms</td>
+          </tr>
+          <tr>
+            <td><a href="pages/md-viewer.html?file=data/npm_help.md&utm_source=webcli&utm_medium=internal&utm_campaign=canonical_clis"><code>npm</code></a></td>
+            <td>Package management</td>
+            <td>Noun subcommands, <code>--save-dev</code>, JSON output via <code>--json</code></td>
+          </tr>
+          <tr>
+            <td><a href="pages/md-viewer.html?file=data/docker_help.md&utm_source=webcli&utm_medium=internal&utm_campaign=canonical_clis"><code>docker</code></a></td>
+            <td>Containers</td>
+            <td>Object-verb subcommands (<code>docker image ls</code>), <code>--format</code></td>
+          </tr>
+          <tr>
+            <td><a href="pages/md-viewer.html?file=data/pip_help.md&utm_source=webcli&utm_medium=internal&utm_campaign=canonical_clis"><code>pip</code></a></td>
+            <td>Python packages</td>
+            <td>Verb subcommands, <code>-r requirements.txt</code>, <code>--dry-run</code></td>
+          </tr>
+          <tr>
+            <td><a href="pages/md-viewer.html?file=data/grep_help.md&utm_source=webcli&utm_medium=internal&utm_campaign=canonical_clis"><code>grep</code></a></td>
+            <td>Text search</td>
+            <td>POSIX short flags, stdin/stdout contract, exit code 1 = no match</td>
+          </tr>
+          <tr>
+            <td><a href="pages/md-viewer.html?file=data/ssh_help.md&utm_source=webcli&utm_medium=internal&utm_campaign=canonical_clis"><code>ssh</code></a></td>
+            <td>Remote access</td>
+            <td><code>-p PORT</code>, <code>-i keyfile</code>, <code>user@host</code> positional</td>
+          </tr>
+          <tr>
+            <td><a href="pages/md-viewer.html?file=data/wget_help.md&utm_source=webcli&utm_medium=internal&utm_campaign=canonical_clis"><code>wget</code></a></td>
+            <td>File download</td>
+            <td>Long flags preferred, <code>-O</code> output, <code>-q</code> quiet mode</td>
+          </tr>
+          <tr>
+            <td><a href="pages/md-viewer.html?file=data/make_help.md&utm_source=webcli&utm_medium=internal&utm_campaign=canonical_clis"><code>make</code></a></td>
+            <td>Build system</td>
+            <td>Target nouns, <code>-C dir</code>, <code>-j N</code>, dry-run via <code>-n</code></td>
+          </tr>
+        </tbody>
+      </table>
+    </section>
+
+    <!-- Research & Evidence -->
+    <section id="research">
+      <h2><a class="headerlink" href="#research">Research &amp; Evidence <span class="pilcrow">¶</span></a></h2>
+      <p>
+        The WebCLI spec is grounded in empirical analysis, not opinion. For each of the 10 canonical CLIs,
+        two documents were produced: the complete help output as emitted by the tool, and 100 real-world
+        example invocations covering basic to advanced usage. All 20 documents were then analyzed to surface
+        the flag conventions, subcommand structures, output contracts, and verb vocabularies that appear
+        most consistently, and therefore carry the highest density in LLM pre-training corpora.
+      </p>
+      <p>
+        The synthesis of that analysis is <a href="pages/md-viewer.html?file=data/cli_design_patterns.md"><code>cli_design_patterns.md</code></a>,
+        which serves as the primary source of truth for the spec. Every design rule on this page can be
+        traced back to a specific pattern observed across multiple tools in the evidence below.
+      </p>
+
+      <div class="admonition note">
+        <p class="admonition-title">Methodology</p>
+        <p>
+          For each CLI: (1) full help text was captured from the tool itself, (2) 100 representative
+          invocations were documented, spanning everyday use through advanced scripting patterns.
+          The resulting 20 documents were cross-referenced to identify conventions present across
+          the majority of tools: the patterns LLMs have encountered most often.
+        </p>
+      </div>
+
+      <table class="spec-table">
+        <thead>
+          <tr>
+            <th>CLI</th>
+            <th>Domain</th>
+            <th>Help output</th>
+            <th>100 examples</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><a href="pages/md-viewer.html?file=data/git_help.md&utm_source=webcli&utm_medium=internal&utm_campaign=research"><code>git</code></a></td>
+            <td>Version control</td>
+            <td><a href="pages/md-viewer.html?file=data/git_help.md&utm_source=webcli&utm_medium=internal&utm_campaign=research">git_help.md</a></td>
+            <td><a href="pages/md-viewer.html?file=data/git_example.md&utm_source=webcli&utm_medium=internal&utm_campaign=research">git_example.md</a></td>
+          </tr>
+          <tr>
+            <td><a href="pages/md-viewer.html?file=data/bash_help.md&utm_source=webcli&utm_medium=internal&utm_campaign=research"><code>bash</code></a></td>
+            <td>Shell / scripting</td>
+            <td><a href="pages/md-viewer.html?file=data/bash_help.md&utm_source=webcli&utm_medium=internal&utm_campaign=research">bash_help.md</a></td>
+            <td><a href="pages/md-viewer.html?file=data/bash_example.md&utm_source=webcli&utm_medium=internal&utm_campaign=research">bash_example.md</a></td>
+          </tr>
+          <tr>
+            <td><a href="pages/md-viewer.html?file=data/curl_help.md&utm_source=webcli&utm_medium=internal&utm_campaign=research"><code>curl</code></a></td>
+            <td>HTTP / transfer</td>
+            <td><a href="pages/md-viewer.html?file=data/curl_help.md&utm_source=webcli&utm_medium=internal&utm_campaign=research">curl_help.md</a></td>
+            <td><a href="pages/md-viewer.html?file=data/curl_example.md&utm_source=webcli&utm_medium=internal&utm_campaign=research">curl_example.md</a></td>
+          </tr>
+          <tr>
+            <td><a href="pages/md-viewer.html?file=data/npm_help.md&utm_source=webcli&utm_medium=internal&utm_campaign=research"><code>npm</code></a></td>
+            <td>Package management</td>
+            <td><a href="pages/md-viewer.html?file=data/npm_help.md&utm_source=webcli&utm_medium=internal&utm_campaign=research">npm_help.md</a></td>
+            <td><a href="pages/md-viewer.html?file=data/npm_example.md&utm_source=webcli&utm_medium=internal&utm_campaign=research">npm_example.md</a></td>
+          </tr>
+          <tr>
+            <td><a href="pages/md-viewer.html?file=data/docker_help.md&utm_source=webcli&utm_medium=internal&utm_campaign=research"><code>docker</code></a></td>
+            <td>Containers</td>
+            <td><a href="pages/md-viewer.html?file=data/docker_help.md&utm_source=webcli&utm_medium=internal&utm_campaign=research">docker_help.md</a></td>
+            <td><a href="pages/md-viewer.html?file=data/docker_example.md&utm_source=webcli&utm_medium=internal&utm_campaign=research">docker_example.md</a></td>
+          </tr>
+          <tr>
+            <td><a href="pages/md-viewer.html?file=data/pip_help.md&utm_source=webcli&utm_medium=internal&utm_campaign=research"><code>pip</code></a></td>
+            <td>Python packages</td>
+            <td><a href="pages/md-viewer.html?file=data/pip_help.md&utm_source=webcli&utm_medium=internal&utm_campaign=research">pip_help.md</a></td>
+            <td><a href="pages/md-viewer.html?file=data/pip_example.md&utm_source=webcli&utm_medium=internal&utm_campaign=research">pip_example.md</a></td>
+          </tr>
+          <tr>
+            <td><a href="pages/md-viewer.html?file=data/grep_help.md&utm_source=webcli&utm_medium=internal&utm_campaign=research"><code>grep</code></a></td>
+            <td>Text search</td>
+            <td><a href="pages/md-viewer.html?file=data/grep_help.md&utm_source=webcli&utm_medium=internal&utm_campaign=research">grep_help.md</a></td>
+            <td><a href="pages/md-viewer.html?file=data/grep_example.md&utm_source=webcli&utm_medium=internal&utm_campaign=research">grep_example.md</a></td>
+          </tr>
+          <tr>
+            <td><a href="pages/md-viewer.html?file=data/ssh_help.md&utm_source=webcli&utm_medium=internal&utm_campaign=research"><code>ssh</code></a></td>
+            <td>Remote access</td>
+            <td><a href="pages/md-viewer.html?file=data/ssh_help.md&utm_source=webcli&utm_medium=internal&utm_campaign=research">ssh_help.md</a></td>
+            <td><a href="pages/md-viewer.html?file=data/ssh_example.md&utm_source=webcli&utm_medium=internal&utm_campaign=research">ssh_example.md</a></td>
+          </tr>
+          <tr>
+            <td><a href="pages/md-viewer.html?file=data/wget_help.md&utm_source=webcli&utm_medium=internal&utm_campaign=research"><code>wget</code></a></td>
+            <td>File download</td>
+            <td><a href="pages/md-viewer.html?file=data/wget_help.md&utm_source=webcli&utm_medium=internal&utm_campaign=research">wget_help.md</a></td>
+            <td><a href="pages/md-viewer.html?file=data/wget_example.md&utm_source=webcli&utm_medium=internal&utm_campaign=research">wget_example.md</a></td>
+          </tr>
+          <tr>
+            <td><a href="pages/md-viewer.html?file=data/make_help.md&utm_source=webcli&utm_medium=internal&utm_campaign=research"><code>make</code></a></td>
+            <td>Build system</td>
+            <td><a href="pages/md-viewer.html?file=data/make_help.md&utm_source=webcli&utm_medium=internal&utm_campaign=research">make_help.md</a></td>
+            <td><a href="pages/md-viewer.html?file=data/make_example.md&utm_source=webcli&utm_medium=internal&utm_campaign=research">make_example.md</a></td>
+          </tr>
+        </tbody>
+      </table>
+    </section>
+
+    <!-- Core Principles -->
+    <section id="core-principles">
+      <h2><a class="headerlink" href="#core-principles">Core Principles <span class="pilcrow">¶</span></a></h2>
+      <p>Five design rules distilled from the 10 canonical CLIs. A conformant CLI follows all five.</p>
+
+      <h3 id="principle-help"><a class="headerlink" href="#principle-help">1. Help Output <span class="pilcrow">¶</span></a></h3>
+      <p>
+        Help text must be emitted on <code>--help</code> (and <code>-h</code>) to stdout, and follow a
+        consistent structure that models have seen millions of times:
+      </p>
+      <pre><code>Usage: TOOL [OPTIONS] COMMAND [ARGS]...
+
+&lt;one-line description&gt;
+
+Options:
+  -f, --flag   Description of flag      [default: value]
+  -h, --help   Show this message and exit
+
+Commands:
+  verb    Short description of verb</code></pre>
+      <p>
+        Models parse this structure implicitly. Deviate from it and the LLM will hallucinate flags that don't exist.
+      </p>
+
+      <h3 id="principle-flags"><a class="headerlink" href="#principle-flags">2. Flag Conventions <span class="pilcrow">¶</span></a></h3>
+      <p>Every flag must have a long form. Short forms are optional but follow POSIX single-character conventions when present.</p>
+      <ul>
+        <li>Boolean flags: <code>--verbose</code> / <code>--no-verbose</code> pair</li>
+        <li>Value flags: <code>--output FILE</code> or <code>--output=FILE</code> (both must work)</li>
+        <li>Short aliases: <code>-v</code> for <code>--verbose</code>, <code>-o</code> for <code>--output</code></li>
+        <li>Stacking short flags: <code>-xvf</code> must be equivalent to <code>-x -v -f</code></li>
+      </ul>
+
+      <h3 id="principle-subcommands"><a class="headerlink" href="#principle-subcommands">3. Subcommand Structure <span class="pilcrow">¶</span></a></h3>
+      <p>
+        Use verb subcommands for actions (<code>init</code>, <code>build</code>, <code>deploy</code>, <code>list</code>, <code>get</code>, <code>set</code>, <code>delete</code>).
+        Prefer flat over nested. If nesting is necessary, follow the <code>docker</code> object-verb pattern: <code>tool resource action</code>.
+      </p>
+      <pre><code><span class="prompt">$</span> tool init          <span class="comment"># verb</span>
+<span class="prompt">$</span> tool config get    <span class="comment"># object-verb (docker-style)</span>
+<span class="prompt">$</span> tool config set KEY=VALUE</code></pre>
+
+      <h3 id="principle-exit-codes"><a class="headerlink" href="#principle-exit-codes">4. Exit Codes <span class="pilcrow">¶</span></a></h3>
+      <p>Exit codes must be consistent and documented. Models infer script logic from exit code conventions:</p>
+      <table class="spec-table">
+        <thead><tr><th>Code</th><th>Meaning</th></tr></thead>
+        <tbody>
+          <tr><td><code>0</code></td><td>Success</td></tr>
+          <tr><td><code>1</code></td><td>General error / no results (grep-style)</td></tr>
+          <tr><td><code>2</code></td><td>Misuse / bad arguments</td></tr>
+          <tr><td><code>126</code></td><td>Permission denied</td></tr>
+          <tr><td><code>127</code></td><td>Command not found</td></tr>
+        </tbody>
+      </table>
+
+      <h3 id="principle-streams"><a class="headerlink" href="#principle-streams">5. stdout / stderr <span class="pilcrow">¶</span></a></h3>
+      <p>
+        Actionable output goes to <strong>stdout</strong>. Logs, warnings, and progress go to <strong>stderr</strong>.
+        This is the invariant that makes pipelines work, and the one LLMs assume without being told.
+      </p>
+      <pre><code><span class="prompt">$</span> tool build 2>/dev/null | jq .   <span class="comment"># works only if stdout is clean JSON</span></code></pre>
+    </section>
+
+    <!-- Specification -->
+    <section id="specification">
+      <h2><a class="headerlink" href="#specification">Specification <span class="pilcrow">¶</span></a></h2>
+      <div class="admonition note">
+        <p class="admonition-title">Normative language</p>
+        <p>
+          The key words <strong>MUST</strong>, <strong>MUST NOT</strong>, <strong>REQUIRED</strong>,
+          <strong>SHOULD</strong>, <strong>SHOULD NOT</strong>, <strong>RECOMMENDED</strong>,
+          <strong>MAY</strong>, and <strong>OPTIONAL</strong> in this document are to be interpreted
+          as described in <a href="https://www.rfc-editor.org/rfc/rfc2119" rel="noopener">RFC 2119</a>.
+        </p>
+      </div>
+
+      <p>
+        The following design rules are derived directly from cross-analysis of the ten canonical CLIs.
+        Each rule identifies the pattern that appears most consistently across the training corpus,
+        and therefore carries the highest confidence weight in LLM representations.
+      </p>
+
+      <h3 id="spec-universal-flags"><a class="headerlink" href="#spec-universal-flags">§1 Universal Flags <span class="pilcrow">¶</span></a></h3>
+      <p>These flags appear across all or nearly all of the ten canonical CLIs. LLMs will predict them with near-certainty.</p>
+      <table class="spec-table">
+        <thead>
+          <tr><th>Flag</th><th>Long form</th><th>Appears in</th><th>Confidence</th></tr>
+        </thead>
+        <tbody>
+          <tr><td><code>-h</code></td><td><code>--help</code></td><td><a href="pages/md-viewer.html?file=data/git_help.md&utm_source=webcli&utm_medium=internal&utm_campaign=spec_flags">git</a>, <a href="pages/md-viewer.html?file=data/curl_help.md&utm_source=webcli&utm_medium=internal&utm_campaign=spec_flags">curl</a>, <a href="pages/md-viewer.html?file=data/npm_help.md&utm_source=webcli&utm_medium=internal&utm_campaign=spec_flags">npm</a>, <a href="pages/md-viewer.html?file=data/docker_help.md&utm_source=webcli&utm_medium=internal&utm_campaign=spec_flags">docker</a>, <a href="pages/md-viewer.html?file=data/pip_help.md&utm_source=webcli&utm_medium=internal&utm_campaign=spec_flags">pip</a>, <a href="pages/md-viewer.html?file=data/grep_help.md&utm_source=webcli&utm_medium=internal&utm_campaign=spec_flags">grep</a>, <a href="pages/md-viewer.html?file=data/ssh_help.md&utm_source=webcli&utm_medium=internal&utm_campaign=spec_flags">ssh</a>, <a href="pages/md-viewer.html?file=data/wget_help.md&utm_source=webcli&utm_medium=internal&utm_campaign=spec_flags">wget</a>, <a href="pages/md-viewer.html?file=data/make_help.md&utm_source=webcli&utm_medium=internal&utm_campaign=spec_flags">make</a></td><td>Highest</td></tr>
+          <tr><td><code>-v</code></td><td><code>--verbose</code></td><td><a href="pages/md-viewer.html?file=data/curl_help.md&utm_source=webcli&utm_medium=internal&utm_campaign=spec_flags">curl</a>, <a href="pages/md-viewer.html?file=data/pip_help.md&utm_source=webcli&utm_medium=internal&utm_campaign=spec_flags">pip</a>, <a href="pages/md-viewer.html?file=data/wget_help.md&utm_source=webcli&utm_medium=internal&utm_campaign=spec_flags">wget</a>, <a href="pages/md-viewer.html?file=data/ssh_help.md&utm_source=webcli&utm_medium=internal&utm_campaign=spec_flags">ssh</a>, <a href="pages/md-viewer.html?file=data/make_help.md&utm_source=webcli&utm_medium=internal&utm_campaign=spec_flags">make</a>, <a href="pages/md-viewer.html?file=data/bash_help.md&utm_source=webcli&utm_medium=internal&utm_campaign=spec_flags">bash</a></td><td>Very high</td></tr>
+          <tr><td><code>-V</code></td><td><code>--version</code></td><td><a href="pages/md-viewer.html?file=data/curl_help.md&utm_source=webcli&utm_medium=internal&utm_campaign=spec_flags">curl</a>, <a href="pages/md-viewer.html?file=data/pip_help.md&utm_source=webcli&utm_medium=internal&utm_campaign=spec_flags">pip</a>, <a href="pages/md-viewer.html?file=data/wget_help.md&utm_source=webcli&utm_medium=internal&utm_campaign=spec_flags">wget</a>, <a href="pages/md-viewer.html?file=data/make_help.md&utm_source=webcli&utm_medium=internal&utm_campaign=spec_flags">make</a>, <a href="pages/md-viewer.html?file=data/npm_help.md&utm_source=webcli&utm_medium=internal&utm_campaign=spec_flags">npm</a></td><td>Very high</td></tr>
+          <tr><td><code>--version</code></td><td></td><td><a href="pages/md-viewer.html?file=data/git_help.md&utm_source=webcli&utm_medium=internal&utm_campaign=spec_flags">git</a>, <a href="pages/md-viewer.html?file=data/curl_help.md&utm_source=webcli&utm_medium=internal&utm_campaign=spec_flags">curl</a>, <a href="pages/md-viewer.html?file=data/npm_help.md&utm_source=webcli&utm_medium=internal&utm_campaign=spec_flags">npm</a>, <a href="pages/md-viewer.html?file=data/docker_help.md&utm_source=webcli&utm_medium=internal&utm_campaign=spec_flags">docker</a>, <a href="pages/md-viewer.html?file=data/pip_help.md&utm_source=webcli&utm_medium=internal&utm_campaign=spec_flags">pip</a>, <a href="pages/md-viewer.html?file=data/wget_help.md&utm_source=webcli&utm_medium=internal&utm_campaign=spec_flags">wget</a>, <a href="pages/md-viewer.html?file=data/make_help.md&utm_source=webcli&utm_medium=internal&utm_campaign=spec_flags">make</a></td><td>Highest</td></tr>
+          <tr><td><code>-q</code></td><td><code>--quiet</code></td><td><a href="pages/md-viewer.html?file=data/curl_help.md&utm_source=webcli&utm_medium=internal&utm_campaign=spec_flags">curl</a>, <a href="pages/md-viewer.html?file=data/pip_help.md&utm_source=webcli&utm_medium=internal&utm_campaign=spec_flags">pip</a>, <a href="pages/md-viewer.html?file=data/wget_help.md&utm_source=webcli&utm_medium=internal&utm_campaign=spec_flags">wget</a>, <a href="pages/md-viewer.html?file=data/grep_help.md&utm_source=webcli&utm_medium=internal&utm_campaign=spec_flags">grep</a>, <a href="pages/md-viewer.html?file=data/make_help.md&utm_source=webcli&utm_medium=internal&utm_campaign=spec_flags">make</a></td><td>High</td></tr>
+          <tr><td><code>-s</code></td><td><code>--silent</code></td><td><a href="pages/md-viewer.html?file=data/curl_help.md&utm_source=webcli&utm_medium=internal&utm_campaign=spec_flags">curl</a>, <a href="pages/md-viewer.html?file=data/wget_help.md&utm_source=webcli&utm_medium=internal&utm_campaign=spec_flags">wget</a>, <a href="pages/md-viewer.html?file=data/make_help.md&utm_source=webcli&utm_medium=internal&utm_campaign=spec_flags">make</a></td><td>High</td></tr>
+          <tr><td><code>-o</code></td><td><code>--output</code></td><td><a href="pages/md-viewer.html?file=data/curl_help.md&utm_source=webcli&utm_medium=internal&utm_campaign=spec_flags">curl</a>, <a href="pages/md-viewer.html?file=data/wget_help.md&utm_source=webcli&utm_medium=internal&utm_campaign=spec_flags">wget</a>, <a href="pages/md-viewer.html?file=data/make_help.md&utm_source=webcli&utm_medium=internal&utm_campaign=spec_flags">make</a></td><td>High</td></tr>
+          <tr><td><code>-f</code></td><td><code>--file</code> / <code>--force</code></td><td><a href="pages/md-viewer.html?file=data/curl_help.md&utm_source=webcli&utm_medium=internal&utm_campaign=spec_flags">curl</a>, <a href="pages/md-viewer.html?file=data/make_help.md&utm_source=webcli&utm_medium=internal&utm_campaign=spec_flags">make</a>, <a href="pages/md-viewer.html?file=data/git_help.md&utm_source=webcli&utm_medium=internal&utm_campaign=spec_flags">git</a>, <a href="pages/md-viewer.html?file=data/wget_help.md&utm_source=webcli&utm_medium=internal&utm_campaign=spec_flags">wget</a></td><td>High</td></tr>
+          <tr><td><code>-n</code></td><td><code>--dry-run</code></td><td><a href="pages/md-viewer.html?file=data/curl_help.md&utm_source=webcli&utm_medium=internal&utm_campaign=spec_flags">curl</a>, <a href="pages/md-viewer.html?file=data/make_help.md&utm_source=webcli&utm_medium=internal&utm_campaign=spec_flags">make</a> (--just-print), <a href="pages/md-viewer.html?file=data/git_help.md&utm_source=webcli&utm_medium=internal&utm_campaign=spec_flags">git</a></td><td>High</td></tr>
+          <tr><td><code>-r</code></td><td><code>--recursive</code></td><td><a href="pages/md-viewer.html?file=data/grep_help.md&utm_source=webcli&utm_medium=internal&utm_campaign=spec_flags">grep</a>, <a href="pages/md-viewer.html?file=data/wget_help.md&utm_source=webcli&utm_medium=internal&utm_campaign=spec_flags">wget</a>, <a href="pages/md-viewer.html?file=data/pip_help.md&utm_source=webcli&utm_medium=internal&utm_campaign=spec_flags">pip</a></td><td>High</td></tr>
+          <tr><td><code>-i</code></td><td><code>--include</code> / <code>--ignore-case</code></td><td><a href="pages/md-viewer.html?file=data/grep_help.md&utm_source=webcli&utm_medium=internal&utm_campaign=spec_flags">grep</a>, <a href="pages/md-viewer.html?file=data/curl_help.md&utm_source=webcli&utm_medium=internal&utm_campaign=spec_flags">curl</a></td><td>Medium</td></tr>
+          <tr><td><code>-e</code></td><td><code>--regexp</code> / <code>--execute</code></td><td><a href="pages/md-viewer.html?file=data/grep_help.md&utm_source=webcli&utm_medium=internal&utm_campaign=spec_flags">grep</a>, <a href="pages/md-viewer.html?file=data/wget_help.md&utm_source=webcli&utm_medium=internal&utm_campaign=spec_flags">wget</a></td><td>Medium</td></tr>
+          <tr><td><code>-d</code></td><td><code>--debug</code></td><td><a href="pages/md-viewer.html?file=data/pip_help.md&utm_source=webcli&utm_medium=internal&utm_campaign=spec_flags">pip</a>, <a href="pages/md-viewer.html?file=data/wget_help.md&utm_source=webcli&utm_medium=internal&utm_campaign=spec_flags">wget</a>, <a href="pages/md-viewer.html?file=data/docker_help.md&utm_source=webcli&utm_medium=internal&utm_campaign=spec_flags">docker</a></td><td>Medium</td></tr>
+          <tr><td><code>-C</code></td><td><code>--directory</code></td><td><a href="pages/md-viewer.html?file=data/make_help.md&utm_source=webcli&utm_medium=internal&utm_campaign=spec_flags">make</a>, <a href="pages/md-viewer.html?file=data/curl_help.md&utm_source=webcli&utm_medium=internal&utm_campaign=spec_flags">curl</a>, <a href="pages/md-viewer.html?file=data/git_help.md&utm_source=webcli&utm_medium=internal&utm_campaign=spec_flags">git</a></td><td>Medium</td></tr>
+        </tbody>
+      </table>
+      <div class="admonition note">
+        <p class="admonition-title">Design rule</p>
+        <p>Implementations <strong>MUST</strong> support <code>-h</code>/<code>--help</code>, <code>-v</code>/<code>--verbose</code>, <code>--version</code>, <code>-q</code>/<code>--quiet</code>, <code>-o</code>/<code>--output</code>, and <code>-n</code>/<code>--dry-run</code>. These are the flags an LLM will guess first, always.</p>
+      </div>
+
+      <h3 id="spec-subcommand-structure"><a class="headerlink" href="#spec-subcommand-structure">§2 Subcommand Structure <span class="pilcrow">¶</span></a></h3>
+      <p><strong>Pattern A: <code>&lt;tool&gt; &lt;verb&gt; &lt;noun&gt;</code></strong>: dominant in high-level tools (git, docker, npm, pip)</p>
+      <pre><code>git commit -m "message"
+docker run -d nginx
+npm install lodash
+pip install requests</code></pre>
+      <p>Verbs are simple English: <code>run</code>, <code>build</code>, <code>push</code>, <code>pull</code>, <code>install</code>, <code>uninstall</code>, <code>list</code>, <code>show</code>, <code>create</code>, <code>delete</code>, <code>start</code>, <code>stop</code>, <code>logs</code>. Nouns are resource names: <code>container</code>, <code>image</code>, <code>network</code>, <code>volume</code>, <code>package</code>, <code>branch</code>, <code>tag</code>.</p>
+
+      <p><strong>Pattern B: <code>&lt;tool&gt; [flags] &lt;target&gt;</code></strong>: dominant in low-level/Unix tools (curl, grep, ssh, wget, make)</p>
+      <pre><code>curl -X POST -H "Content-Type: application/json" https://api.example.com
+grep -rn "TODO" ./src
+ssh -p 2222 user@hostname
+wget -O file.tar.gz https://example.com/</code></pre>
+      <p>No subcommands: the primary action is implied by the tool. Options modify behavior; positional arguments are targets.</p>
+
+      <div class="admonition note">
+        <p class="admonition-title">Design rule</p>
+        <p>Use <code>&lt;tool&gt; &lt;verb&gt; &lt;noun&gt;</code> (Pattern A) if building a multi-resource CLI. If your CLI manages resources (users, projects, configs, jobs), use Pattern A. If it is a single-purpose utility (search, fetch, convert), use Pattern B. Most modern CLIs (<code>gh</code>, <code>aws</code>, <code>kubectl</code>, <code>terraform</code>) use Pattern A.</p>
+      </div>
+
+      <h3 id="spec-help-access"><a class="headerlink" href="#spec-help-access">§3 Help Access Patterns <span class="pilcrow">¶</span></a></h3>
+      <table class="spec-table">
+        <thead>
+          <tr><th>Pattern</th><th>Examples</th><th>LLM confidence</th></tr>
+        </thead>
+        <tbody>
+          <tr><td><code>&lt;tool&gt; &lt;subcommand&gt; --help</code></td><td>docker run --help, pip install --help</td><td>Highest</td></tr>
+          <tr><td><code>&lt;tool&gt; help &lt;subcommand&gt;</code></td><td>git help commit, npm help install</td><td>High</td></tr>
+          <tr><td><code>&lt;tool&gt; -h</code></td><td>grep -h, make -h</td><td>High</td></tr>
+          <tr><td><code>&lt;tool&gt; --help</code></td><td>curl --help, wget --help</td><td>Highest</td></tr>
+        </tbody>
+      </table>
+      <div class="admonition note">
+        <p class="admonition-title">Design rule</p>
+        <p>Support both <code>&lt;tool&gt; &lt;subcommand&gt; --help</code> and <code>&lt;tool&gt; --help</code>. The docker/npm pattern of <code>&lt;subcommand&gt; --help</code> is the most commonly seen in training data.</p>
+      </div>
+
+      <h3 id="spec-output-conventions"><a class="headerlink" href="#spec-output-conventions">§4 Output Conventions <span class="pilcrow">¶</span></a></h3>
+      <table class="spec-table">
+        <thead>
+          <tr><th>Convention</th><th>Adoption</th><th>Notes</th></tr>
+        </thead>
+        <tbody>
+          <tr><td>Errors → stderr</td><td>All 10</td><td>Allows clean piping of stdout</td></tr>
+          <tr><td>Data/output → stdout</td><td>All 10</td><td>Enables piping to <a href="https://jqlang.org/?utm_source=webcli&utm_medium=referral&utm_campaign=spec" rel="noopener">jq</a>, <a href="pages/md-viewer.html?file=data/grep_help.md&utm_source=webcli&utm_medium=internal&utm_campaign=spec">grep</a>, etc.</td></tr>
+          <tr><td>Exit code 0 = success</td><td>All 10</td><td>POSIX standard</td></tr>
+          <tr><td>Exit code non-zero = failure</td><td>All 10</td><td>Enables <code>&amp;&amp;</code> / <code>||</code> chaining</td></tr>
+          <tr><td><code>-q</code>/<code>--quiet</code> suppresses stdout</td><td>8/10</td><td>Silent for scripting</td></tr>
+          <tr><td><code>-v</code>/<code>--verbose</code> adds detail</td><td>8/10</td><td>Debugging aid</td></tr>
+          <tr><td><code>--dry-run</code>/<code>-n</code> previews actions</td><td>6/10</td><td>Safety before destructive ops</td></tr>
+        </tbody>
+      </table>
+      <div class="admonition note">
+        <p class="admonition-title">Design rule</p>
+        <p>Implementations <strong>MUST</strong> write errors to stderr and output to stdout. Implementations <strong>MUST</strong> return exit code 0 on success and non-zero on failure. This is the single most universal convention across all ten tools.</p>
+      </div>
+
+      <h3 id="spec-json-output"><a class="headerlink" href="#spec-json-output">§5 JSON Output <span class="pilcrow">¶</span></a></h3>
+      <p>Four of the ten tools support structured JSON output, and this pattern is rapidly converging:</p>
+      <table class="spec-table">
+        <thead>
+          <tr><th>Tool</th><th>JSON output flag</th></tr>
+        </thead>
+        <tbody>
+          <tr><td><code>docker</code></td><td><code>docker inspect</code> (JSON by default), <code>docker ps --format json</code></td></tr>
+          <tr><td><code>npm</code></td><td><code>npm list --format=json</code>, <code>npm outdated --json</code></td></tr>
+          <tr><td><code>pip</code></td><td><code>pip list --format=json</code>, <code>pip outdated --format=json</code></td></tr>
+          <tr><td><code>curl</code></td><td><code>--write-out</code> for metadata; body is pass-through</td></tr>
+          <tr><td><code>git</code></td><td><code>--format=json</code> not native, but <code>--porcelain</code> for parseable output</td></tr>
+        </tbody>
+      </table>
+      <p>Emerging standard: <code>--output json</code> or <code>--format json</code>.</p>
+      <div class="admonition note">
+        <p class="admonition-title">Design rule</p>
+        <p>Data-returning subcommands <strong>SHOULD</strong> support <code>--output json</code> (or <code>--format json</code>). LLMs will attempt to pipe output to <a href="https://jqlang.org/?utm_source=webcli&utm_medium=referral&utm_campaign=spec" rel="noopener"><code>jq</code></a>; implementations <strong>MUST</strong> emit clean, valid JSON to stdout when this flag is set.</p>
+      </div>
+
+      <h3 id="spec-verb-vocabulary"><a class="headerlink" href="#spec-verb-vocabulary">§6 Verb Vocabulary <span class="pilcrow">¶</span></a></h3>
+      <p>The most LLM-saturated action verbs, ranked by frequency across all ten tools' help output and examples:</p>
+      <table class="spec-table">
+        <thead>
+          <tr><th>Rank</th><th>Verb</th><th>Tools using it</th></tr>
+        </thead>
+        <tbody>
+          <tr><td>1</td><td><code>install</code></td><td>npm, pip, make (install target)</td></tr>
+          <tr><td>2</td><td><code>run</code></td><td>docker, npm, make</td></tr>
+          <tr><td>3</td><td><code>build</code></td><td>docker, npm, make</td></tr>
+          <tr><td>4</td><td><code>push</code></td><td>git, docker</td></tr>
+          <tr><td>5</td><td><code>pull</code></td><td>git, docker, npm</td></tr>
+          <tr><td>6</td><td><code>list</code> / <code>ls</code></td><td>docker, npm, pip</td></tr>
+          <tr><td>7</td><td><code>show</code></td><td>git, pip, docker (inspect)</td></tr>
+          <tr><td>8</td><td><code>create</code></td><td>docker, git (branch)</td></tr>
+          <tr><td>9</td><td><code>delete</code> / <code>rm</code> / <code>remove</code></td><td>docker, git, npm</td></tr>
+          <tr><td>10</td><td><code>update</code></td><td>npm, pip, docker</td></tr>
+          <tr><td>11</td><td><code>start</code></td><td>npm, docker</td></tr>
+          <tr><td>12</td><td><code>stop</code></td><td>docker, npm</td></tr>
+          <tr><td>13</td><td><code>logs</code></td><td>docker</td></tr>
+          <tr><td>14</td><td><code>init</code></td><td>git, npm, docker</td></tr>
+          <tr><td>15</td><td><code>config</code></td><td>git, npm, pip, docker</td></tr>
+          <tr><td>16</td><td><code>login</code></td><td>docker, npm</td></tr>
+          <tr><td>17</td><td><code>logout</code></td><td>docker, npm</td></tr>
+          <tr><td>18</td><td><code>version</code></td><td>git, docker, npm, pip</td></tr>
+          <tr><td>19</td><td><code>help</code></td><td>git, npm, pip, make</td></tr>
+          <tr><td>20</td><td><code>status</code></td><td>git, npm (doctor/audit)</td></tr>
+        </tbody>
+      </table>
+      <div class="admonition note">
+        <p class="admonition-title">Design rule</p>
+        <p>Use verbs from this table. Do not invent new verbs. LLMs will predict these correctly. Avoid: <code>execute</code> (use <code>run</code>), <code>enumerate</code> (use <code>list</code>), <code>erase</code> (use <code>delete</code>).</p>
+      </div>
+
+      <h3 id="spec-flag-naming"><a class="headerlink" href="#spec-flag-naming">§7 Flag Naming Conventions <span class="pilcrow">¶</span></a></h3>
+      <p><strong>Short flags (<code>-x</code>)</strong>: single character, preceded by single dash. Can be combined: <code>-rf</code>, <code>-vvv</code>, <code>-aux</code>. Used for frequently-typed, well-known flags.</p>
+      <p><strong>Long flags (<code>--flag-name</code>)</strong>: lowercase with hyphens (not underscores), preceded by double dash. Can take a value: <code>--output=file.json</code> or <code>--output file.json</code>.</p>
+      <p><strong>Value separator:</strong> Both <code>--flag=value</code> and <code>--flag value</code> are used across the ten tools. Supporting both is safest.</p>
+      <p><strong>Boolean flags:</strong></p>
+      <ul>
+        <li>Positive: <code>--verbose</code>, <code>--force</code>, <code>--recursive</code></li>
+        <li>Negative: <code>--no-color</code>, <code>--no-cache</code>, <code>--no-verify</code></li>
+        <li>Pattern <code>--no-&lt;flag&gt;</code> is used by curl, wget, docker, npm</li>
+      </ul>
+      <div class="admonition note">
+        <p class="admonition-title">Design rule</p>
+        <p>Short flags for the most common options (<code>-v</code>, <code>-q</code>, <code>-o</code>, <code>-f</code>, <code>-h</code>). Long flags for everything else. Use <code>--no-&lt;flag&gt;</code> to negate boolean flags. Use hyphens, not underscores, in long flag names.</p>
+      </div>
+
+      <h3 id="spec-positional-args"><a class="headerlink" href="#spec-positional-args">§8 Positional Argument Conventions <span class="pilcrow">¶</span></a></h3>
+      <table class="spec-table">
+        <thead>
+          <tr><th>Tool</th><th>Positional args</th></tr>
+        </thead>
+        <tbody>
+          <tr><td><code>git</code></td><td><code>git commit &lt;pathspec&gt;</code></td></tr>
+          <tr><td><code>grep</code></td><td><code>grep [pattern] [file...]</code></td></tr>
+          <tr><td><code>curl</code></td><td><code>curl [options] &lt;url&gt;</code></td></tr>
+          <tr><td><code>ssh</code></td><td><code>ssh [options] &lt;destination&gt; [command]</code></td></tr>
+          <tr><td><code>make</code></td><td><code>make [options] [target...]</code></td></tr>
+          <tr><td><code>docker</code></td><td><code>docker run [options] &lt;image&gt; [command]</code></td></tr>
+        </tbody>
+      </table>
+      <p>Options come before positional arguments. Multiple positional args are common (files, URLs, targets).</p>
+      <div class="admonition note">
+        <p class="admonition-title">Design rule</p>
+        <p>Put positional arguments after all flags. The most important positional arg comes last (or first if it is a resource name in <code>&lt;verb&gt; &lt;noun&gt;</code> commands).</p>
+      </div>
+
+      <h3 id="spec-config-layering"><a class="headerlink" href="#spec-config-layering">§9 Configuration Layering <span class="pilcrow">¶</span></a></h3>
+      <p>All ten tools support configuration at multiple layers, in priority order (highest to lowest):</p>
+      <ol>
+        <li><strong>Command-line flags</strong> — all 10 tools</li>
+        <li><strong>Environment variables</strong> — <a href="pages/md-viewer.html?file=data/curl_help.md&utm_source=webcli&utm_medium=internal&utm_campaign=spec_config">curl</a> (<code>CURL_CA_BUNDLE</code>), <a href="pages/md-viewer.html?file=data/docker_help.md&utm_source=webcli&utm_medium=internal&utm_campaign=spec_config">docker</a> (<code>DOCKER_HOST</code>), <a href="pages/md-viewer.html?file=data/npm_help.md&utm_source=webcli&utm_medium=internal&utm_campaign=spec_config">npm</a> (<code>NPM_TOKEN</code>), <a href="pages/md-viewer.html?file=data/git_help.md&utm_source=webcli&utm_medium=internal&utm_campaign=spec_config">git</a> (<code>GIT_DIR</code>)</li>
+        <li><strong>Per-project config file</strong> — <a href="pages/md-viewer.html?file=data/git_help.md&utm_source=webcli&utm_medium=internal&utm_campaign=spec_config">git</a> (<code>.git/config</code>), <a href="pages/md-viewer.html?file=data/npm_help.md&utm_source=webcli&utm_medium=internal&utm_campaign=spec_config">npm</a> (<code>.npmrc</code>), <a href="pages/md-viewer.html?file=data/make_help.md&utm_source=webcli&utm_medium=internal&utm_campaign=spec_config">make</a> (<code>Makefile</code>)</li>
+        <li><strong>User config file</strong> — <a href="pages/md-viewer.html?file=data/git_help.md&utm_source=webcli&utm_medium=internal&utm_campaign=spec_config">git</a> (<code>~/.gitconfig</code>), <a href="pages/md-viewer.html?file=data/npm_help.md&utm_source=webcli&utm_medium=internal&utm_campaign=spec_config">npm</a> (<code>~/.npmrc</code>), <a href="pages/md-viewer.html?file=data/pip_help.md&utm_source=webcli&utm_medium=internal&utm_campaign=spec_config">pip</a> (<code>~/.config/pip/pip.conf</code>), <a href="pages/md-viewer.html?file=data/curl_help.md&utm_source=webcli&utm_medium=internal&utm_campaign=spec_config">curl</a> (<code>~/.curlrc</code>)</li>
+        <li><strong>System config file</strong> — <a href="pages/md-viewer.html?file=data/ssh_help.md&utm_source=webcli&utm_medium=internal&utm_campaign=spec_config">ssh</a> (<code>/etc/ssh/ssh_config</code>), <a href="pages/md-viewer.html?file=data/git_help.md&utm_source=webcli&utm_medium=internal&utm_campaign=spec_config">git</a> (<code>/etc/gitconfig</code>)</li>
+      </ol>
+      <div class="admonition note">
+        <p class="admonition-title">Design rule</p>
+        <p>Support all three primary layers: CLI flags &gt; env vars &gt; config file. LLMs will expect <code>MYTOOL_&lt;FLAG&gt;</code> env vars and a <code>~/.mytoolrc</code> or <code>~/.config/mytool/config</code> file.</p>
+      </div>
+
+      <h3 id="spec-piping"><a class="headerlink" href="#spec-piping">§10 Piping &amp; Composability <span class="pilcrow">¶</span></a></h3>
+      <p>The most frequently seen piping patterns in training data:</p>
+      <pre><code><span class="comment"># Pipe to jq (JSON output)</span>
+docker inspect container | jq '.NetworkSettings.IPAddress'
+npm list --json | jq '.dependencies | keys'
+
+<span class="comment"># Pipe to grep (filter output)</span>
+docker ps | grep "nginx"
+git log --oneline | grep "fix:"
+pip list | grep "requests"
+
+<span class="comment"># Pipe to xargs (act on output)</span>
+docker ps -q | xargs docker stop
+git diff --name-only | xargs grep "TODO"
+
+<span class="comment"># Silent with exit status check</span>
+curl -sf https://api.example.com/health && echo "OK"
+make -q && echo "Up to date"
+
+<span class="comment"># Redirect output to file</span>
+git log > commits.txt
+npm list > packages.txt</code></pre>
+      <div class="admonition note">
+        <p class="admonition-title">Design rule</p>
+        <p>Design for composability from the start. Stdout must be clean, pipeable lines or JSON; never mixed with progress/status. Use <code>--quiet</code> to suppress all non-data output for scripting. Give exit codes clear, documented meanings.</p>
+      </div>
+
+      <h3 id="spec-summary"><a class="headerlink" href="#spec-summary">§11 Summary: Recommended Conventions <span class="pilcrow">¶</span></a></h3>
+      <p>A conformant LLM-fluent CLI applies all of the following:</p>
+      <table class="spec-table">
+        <thead>
+          <tr><th>Decision</th><th>Recommended choice</th><th>Reason</th></tr>
+        </thead>
+        <tbody>
+          <tr><td>Subcommand structure</td><td><code>&lt;tool&gt; &lt;verb&gt; &lt;noun&gt;</code></td><td>git/docker/npm pattern (highest LLM training density)</td></tr>
+          <tr><td>Help</td><td><code>--help</code> and <code>&lt;subcommand&gt; --help</code></td><td>Universal</td></tr>
+          <tr><td>Version</td><td><code>--version</code></td><td>Universal</td></tr>
+          <tr><td>Verbosity</td><td><code>-v</code> / <code>--verbose</code></td><td>8/10 tools</td></tr>
+          <tr><td>Silence</td><td><code>-q</code> / <code>--quiet</code></td><td>8/10 tools</td></tr>
+          <tr><td>Output file</td><td><code>-o</code> / <code>--output</code></td><td>curl, wget, make</td></tr>
+          <tr><td>Dry run</td><td><code>--dry-run</code> or <code>-n</code></td><td>make, curl, git</td></tr>
+          <tr><td>Force</td><td><code>-f</code> / <code>--force</code></td><td>git, docker, npm</td></tr>
+          <tr><td>JSON output</td><td><code>--output json</code></td><td>docker, npm, pip pattern</td></tr>
+          <tr><td>Config</td><td><code>--config &lt;file&gt;</code></td><td>curl, wget pattern</td></tr>
+          <tr><td>Errors</td><td>stderr</td><td>All 10</td></tr>
+          <tr><td>Exit codes</td><td>0 = success, non-zero = failure</td><td>All 10</td></tr>
+          <tr><td>Flag naming</td><td><code>--kebab-case</code></td><td>All 10</td></tr>
+          <tr><td>Flag negation</td><td><code>--no-&lt;flag&gt;</code></td><td>curl, wget, docker, npm</td></tr>
+          <tr><td>Env vars</td><td><code>MYTOOL_&lt;FLAG&gt;</code></td><td>docker, npm, git pattern</td></tr>
+          <tr><td>Verb vocabulary</td><td>From §6 table</td><td>Highest LLM saturation</td></tr>
+        </tbody>
+      </table>
+    </section>
+
+    <!-- Why It Works -->
+    <section id="why-it-works">
+      <h2><a class="headerlink" href="#why-it-works">Why It Works <span class="pilcrow">¶</span></a></h2>
+      <p>
+        LLMs don't learn tools from documentation at inference time. They learn from the statistical distribution
+        of patterns in training data. When your CLI matches the patterns of <a href="pages/md-viewer.html?file=data/git_help.md&utm_source=webcli&utm_medium=internal&utm_campaign=why_it_works"><code>git</code></a>, <a href="pages/md-viewer.html?file=data/curl_help.md&utm_source=webcli&utm_medium=internal&utm_campaign=why_it_works"><code>curl</code></a>,
+        and <a href="pages/md-viewer.html?file=data/docker_help.md&utm_source=webcli&utm_medium=internal&utm_campaign=why_it_works"><code>docker</code></a>, the model's internal representations transfer directly.
+      </p>
+      <p>
+        This is the same principle as transfer learning in neural networks, except the "model" is already trained,
+        and you're designing your tool to land in a high-density region of its learned pattern space.
+      </p>
+
+      <div class="admonition note">
+        <p class="admonition-title">Training data saturation</p>
+        <p>
+          <a href="pages/md-viewer.html?file=data/git_help.md&utm_source=webcli&utm_medium=internal&utm_campaign=why_it_works"><code>git</code></a> appears in an estimated 40%+ of all public GitHub repositories. <a href="pages/md-viewer.html?file=data/curl_help.md&utm_source=webcli&utm_medium=internal&utm_campaign=why_it_works"><code>curl</code></a> appears
+          in the majority of API documentation examples. <a href="pages/md-viewer.html?file=data/docker_help.md&utm_source=webcli&utm_medium=internal&utm_campaign=why_it_works"><code>docker</code></a> is in nearly every DevOps tutorial
+          published between 2016 and 2024. These tools define what a CLI <em>is</em>, in the model's representation space.
+        </p>
+      </div>
+
+      <p>
+        A conformant WebCLI tool will be correctly invoked, piped, and scripted by an LLM with no documentation
+        in context: just the tool name and a task description. Non-conformant CLIs require documentation injection,
+        fine-tuning, or repeated correction.
+      </p>
+    </section>
+
+    <!-- Get Involved -->
+    <section id="get-involved">
+      <h2><a class="headerlink" href="#get-involved">Get Involved <span class="pilcrow">¶</span></a></h2>
+      <p>WebCLI is an open specification. Contributions, corrections, and RFCs are welcome.</p>
+      <ul>
+        <li><strong>GitHub:</strong> <a href="https://github.com/webclihq/spec?utm_source=webcli&utm_medium=referral&utm_campaign=get_involved" rel="noopener">github.com/webclihq/spec</a> — spec source, issues, and discussions</li>
+        <li><strong>Propose an RFC:</strong> Open an issue with the <code>[RFC]</code> prefix to propose a spec change</li>
+        <li><strong>Conformance testing:</strong> A reference CLI linter (<code>webcli-lint</code>) is planned for v0.2</li>
+      </ul>
+
+      <div class="admonition note">
+        <p class="admonition-title">Status</p>
+        <p>This is a <strong>draft specification</strong>. Sections marked with <code>[RFC]</code> are open for community input. The spec will reach v1.0 when at least three independent conformant CLIs exist in the wild.</p>
+      </div>
+    </section>
+
+    <footer class="page-footer">
+      <p>WebCLI Spec &middot; Draft v0.1 &middot; March 2026 &middot; <a href="https://github.com/webclihq/spec?utm_source=webcli&utm_medium=referral&utm_campaign=footer" rel="noopener">GitHub</a> &middot; Released under <a href="https://creativecommons.org/licenses/by/4.0/?utm_source=webcli&utm_medium=referral&utm_campaign=footer" rel="noopener">CC BY 4.0</a> &middot; Authored by <a href="https://github.com/chandler212" rel="noopener">@chandler212</a></p>
+      <p class="footer-disclaimer">No affiliation with or endorsement from any company or product referenced herein. All trademarks are the property of their respective owners.</p>
+    </footer>
+
+  </main>
+
+  <!-- Right TOC -->
+  <aside class="right-toc" aria-label="On this page">
+    <p class="toc-title">On this page</p>
+    <ul>
+      <li><a href="#about-this-document">About this document</a></li>
+      <li><a href="#what-is-webcli">What is WebCLI?</a></li>
+      <li><a href="#canonical-clis">The 10 Canonical CLIs</a></li>
+      <li><a href="#research">Research &amp; Evidence</a></li>
+      <li><a href="#core-principles">Core Principles</a>
+        <ul>
+          <li><a href="#principle-help">Help Output</a></li>
+          <li><a href="#principle-flags">Flag Conventions</a></li>
+          <li><a href="#principle-subcommands">Subcommand Structure</a></li>
+          <li><a href="#principle-exit-codes">Exit Codes</a></li>
+          <li><a href="#principle-streams">stdout / stderr</a></li>
+        </ul>
+      </li>
+      <li><a href="#specification">Specification</a>
+        <ul>
+          <li><a href="#spec-universal-flags">§1 Universal Flags</a></li>
+          <li><a href="#spec-subcommand-structure">§2 Subcommand Structure</a></li>
+          <li><a href="#spec-help-access">§3 Help Access</a></li>
+          <li><a href="#spec-output-conventions">§4 Output Conventions</a></li>
+          <li><a href="#spec-json-output">§5 JSON Output</a></li>
+          <li><a href="#spec-verb-vocabulary">§6 Verb Vocabulary</a></li>
+          <li><a href="#spec-flag-naming">§7 Flag Naming</a></li>
+          <li><a href="#spec-positional-args">§8 Positional Arguments</a></li>
+          <li><a href="#spec-config-layering">§9 Config Layering</a></li>
+          <li><a href="#spec-piping">§10 Piping &amp; Composability</a></li>
+          <li><a href="#spec-summary">§11 Summary</a></li>
+        </ul>
+      </li>
+      <li><a href="#why-it-works">Why It Works</a></li>
+      <li><a href="#get-involved">Get Involved</a></li>
+    </ul>
+  </aside>
+
+</div><!-- .page-wrap -->
+
+<script src="assets/js/site.js"></script>
+
+</body>
+</html>
