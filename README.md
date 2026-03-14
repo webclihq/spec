@@ -1,14 +1,33 @@
 # WebCLI Spec
 
-**A specification for building CLIs that LLMs already understand.**
+**Open Specification · Draft v0.1**
 
-Live site: [webcli.com](https://webcli.com)
+A specification for building CLIs that LLMs already understand. LLMs have seen the flag conventions, subcommand structures, and output formats of tools like `git`, `curl`, and `docker` billions of times. Build your CLI to match those well-known patterns so LLMs can invoke it correctly from just a name and a task description.
+
+**Live site:** [webcli.com](https://webcli.com)
+
+---
+
+|                |                                                              |
+| -------------- | ------------------------------------------------------------ |
+| **Version**    | 0.1-draft                                                    |
+| **Published**  | March 13, 2026                                               |
+| **Author**     | [@chandler212](https://github.com/chandler212)               |
+| **Repository** | [github.com/webclihq/spec](https://github.com/webclihq/spec) |
+| **License**    | [CC BY 4.0](https://creativecommons.org/licenses/by/4.0/)    |
+| **Status**     | Draft — open for community input                             |
+
+---
 
 ## What is WebCLI?
 
-When a developer asks an LLM to write a shell script using `git`, `curl`, or `docker`, the model gets it right without any documentation in the prompt. That's because these tools are saturated in LLM pre-training data — billions of examples in READMEs, Stack Overflow answers, CI configs, and shell scripts.
+When a developer asks an LLM to write a shell script using `git`, `curl`, or `docker`, the model gets it right: flags, subcommands, output format and all. It doesn't need documentation in the prompt. It already knows.
 
-WebCLI is a specification for building new CLIs that match those saturated patterns closely enough that LLMs already "know" how your tool works from day one — no fine-tuning, no prompt engineering, no docs in context.
+That's not magic. It's saturation. These tools have appeared billions of times in pre-2024 training data: in READMEs, Stack Overflow answers, blog posts, CI configs, and shell scripts. The patterns are _baked in_.
+
+**WebCLI is a specification** for building new CLIs that match those saturated patterns closely enough that LLMs already "know" how your tool works from day one, without any training, documentation injection, or special prompting.
+
+> **Scope** — WebCLI covers command-line interface _design_: help text format, flag conventions, subcommand structure, exit codes, and output contracts. It does not prescribe implementation language or framework.
 
 ## Spec
 
