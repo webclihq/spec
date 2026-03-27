@@ -11,6 +11,7 @@ const PARTIALS_DIR = path.join(ROOT, '_partials');
 
 const sidebar = fs.readFileSync(path.join(PARTIALS_DIR, 'sidebar.html'), 'utf8');
 const mobileHeader = fs.readFileSync(path.join(PARTIALS_DIR, 'mobile-header.html'), 'utf8');
+const googleTag = fs.readFileSync(path.join(PARTIALS_DIR, 'google-tag.html'), 'utf8');
 
 // [file path relative to ROOT, root prefix, pages prefix]
 const pages = [
@@ -43,6 +44,7 @@ pages.forEach(function ([file, rootPrefix, pagesPrefix]) {
 
   html = replaceBlock(html, '<!-- MOBILE-HEADER -->', '<!-- /MOBILE-HEADER -->', stampedHeader.trimEnd());
   html = replaceBlock(html, '<!-- SIDEBAR -->', '<!-- /SIDEBAR -->', stampedSidebar.trimEnd());
+  html = replaceBlock(html, '<!-- GOOGLE-TAG -->', '<!-- /GOOGLE-TAG -->', googleTag.trimEnd());
 
   fs.writeFileSync(filePath, html, 'utf8');
   console.log('Stamped: ' + file);
